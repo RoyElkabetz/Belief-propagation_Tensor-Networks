@@ -240,7 +240,7 @@ def absorbWeights(tensor, edgesNidx, weights):
     :return: the new tensor list [new_tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
     """
     for i in range(len(edgesNidx[0])):
-        tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))), weights[edgesNidx[0][i]], [edgesNidx[1][i]],
+        tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))), weights[int(edgesNidx[0][i])], [int(edgesNidx[1][i])],
                               list(range(len(tensor[0].shape))))
     return tensor
 
@@ -254,8 +254,8 @@ def absorbSqrtWeights(tensor, edgesNidx, weights):
     :return: the new tensor list [new_tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
     """
     for i in range(len(edgesNidx[0])):
-        tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))), np.sqrt(weights[edgesNidx[0][i]]),
-                              [edgesNidx[1][i]], list(range(len(tensor[0].shape))))
+        tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))), np.sqrt(weights[int(edgesNidx[0][i])]),
+                              [int(edgesNidx[1][i])], list(range(len(tensor[0].shape))))
     return tensor
 
 
@@ -274,11 +274,11 @@ def absorbWeights_twoSiteExpectationWithRectangularEnvironment(tensor, edgesNidx
     """
     for i in range(len(edgesNidx[0])):
         if edgesNidx[0][i] in edgesINenv:
-            tensor = np.einsum(tensor, list(range(len(tensor.shape))), np.sqrt(weights[edgesNidx[0][i]]),
-                               [edgesNidx[1][i]], list(range(len(tensor.shape))))
+            tensor = np.einsum(tensor, list(range(len(tensor.shape))), np.sqrt(weights[int(edgesNidx[0][i])]),
+                               [int(edgesNidx[1][i])], list(range(len(tensor.shape))))
         elif edgesNidx[0][i] in edgesOUTenv:
-            tensor = np.einsum(tensor, list(range(len(tensor.shape))), weights[edgesNidx[0][i]],
-                               [edgesNidx[1][i]], list(range(len(tensor.shape))))
+            tensor = np.einsum(tensor, list(range(len(tensor.shape))), weights[int(edgesNidx[0][i])],
+                               [int(edgesNidx[1][i])], list(range(len(tensor.shape))))
         else:
             raise IndexError('Error: 00001')
     return tensor
@@ -294,7 +294,7 @@ def absorbInverseWeights(tensor, edgesNidx, weights):
     """
     for i in range(len(edgesNidx[0])):
         tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))),
-                              weights[edgesNidx[0][i]] ** (-1), [edgesNidx[1][i]], list(range(len(tensor[0].shape))))
+                              weights[int(edgesNidx[0][i])] ** (-1), [int(edgesNidx[1][i])], list(range(len(tensor[0].shape))))
     return tensor
 
 
@@ -534,15 +534,15 @@ def two_site_expectation(Ek, TT, LL, smat, Oij):
     lamda_k_conj_idx = [t + 2, t + 3]
     Oij_idx = [s, s + 1, s + 2, s + 3]  # (i, j, i', j')
 
-    Ti_idx = range(len(Ti[0].shape))
-    Ti_conj_idx = range(len(Ti_conj[0].shape))
+    Ti_idx = list(range(len(Ti[0].shape)))
+    Ti_conj_idx = list(range(len(Ti_conj[0].shape)))
     Ti_idx[0] = Oij_idx[0]  # i
     Ti_conj_idx[0] = Oij_idx[2]  # i'
     Ti_idx[Ti[2][0]] = lamda_k_idx[0]
     Ti_conj_idx[Ti_conj[2][0]] = lamda_k_conj_idx[0]
 
-    Tj_idx = range(len(Ti[0].shape) + 1, len(Ti[0].shape) + 1 + len(Tj[0].shape))
-    Tj_conj_idx = range(len(Ti_conj[0].shape) + 1, len(Ti_conj[0].shape) + 1 + len(Tj_conj[0].shape))
+    Tj_idx = list(range(len(Ti[0].shape) + 1, len(Ti[0].shape) + 1 + len(Tj[0].shape)))
+    Tj_conj_idx = list(range(len(Ti_conj[0].shape) + 1, len(Ti_conj[0].shape) + 1 + len(Tj_conj[0].shape)))
     Tj_idx[0] = Oij_idx[1]  # j
     Tj_conj_idx[0] = Oij_idx[3]  # j'
     Tj_idx[Tj[2][0]] = lamda_k_idx[1]

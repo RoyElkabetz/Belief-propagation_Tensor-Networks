@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 
 
 # tensor network parameters
-N = 10
+N = 4
 d = 2
 D = 3
 
 # initialize
-structureMat = smg.finitePEPSobcStructureMatrixGenerator(N, N)
+structureMat, incidenceMat = smg.finitePEPSobcStructureMatrixGenerator(N, N)
 tensors, lambdas = smg.randomTensornetGenerator(structureMat, d, D)
 N, M = structureMat.shape
 

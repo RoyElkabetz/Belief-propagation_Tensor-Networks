@@ -37,14 +37,14 @@ flag_save_xlsx = 1
 
 #np.random.seed(seed=8)
 file_name = "2020_03_06_3_100_OBC_AFH_PEPS"
-N, M = 10, 10
+N, M = 4, 4
 
 bc = 'open'
 dE = 1e-5
 t_max = 100
 dumping = 0.2
 epsilon = 1e-5
-D_max = [2, 3, 4]
+D_max = [3]
 mu = -1
 sigma = 0
 Jk = np.random.normal(mu, sigma, np.int((N - 1) * M + (M - 1) * N))
