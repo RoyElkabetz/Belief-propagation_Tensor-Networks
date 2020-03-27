@@ -51,8 +51,8 @@ def simpleUpdate(tensors,
         iEdgesNidx, jEdgesNidx = getTensorsEdges(Ek, smat)
 
         # absorb environment (lambda weights) into tensors
-        Ti = absorbWeights(Ti, iEdgesNidx, weights)
-        Tj = absorbWeights(Tj, jEdgesNidx, weights)
+        Ti[0] = absorbWeights(Ti[0], iEdgesNidx, weights)
+        Tj[0] = absorbWeights(Tj[0], jEdgesNidx, weights)
 
         # permuting the indices associated with edge Ek tensors Ti, Tj with their 1st index
         Ti = indexPermute(Ti)
@@ -120,8 +120,8 @@ def simpleUpdate(tensors,
         Tj = indexPermute(Tj)
 
         # Remove bond matrices lambda_m from virtual legs m != Ek to obtain the updated tensors Ti~, Tj~.
-        Ti = absorbInverseWeights(Ti, iEdgesNidx, weights)
-        Tj = absorbInverseWeights(Tj, jEdgesNidx, weights)
+        Ti[0] = absorbInverseWeights(Ti[0], iEdgesNidx, weights)
+        Tj[0] = absorbInverseWeights(Tj[0], jEdgesNidx, weights)
 
         # Normalize and save new Ti Tj and lambda_k
         tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
@@ -135,7 +135,7 @@ def simpleUpdate(tensors,
     return tensors, weights
 
 ########################################################################################################################
-######################                   Simple Update auxiliary functions                 #############################
+#                                        Simple Update auxiliary functions                                             #
 ########################################################################################################################
 
 def getTensors(edge, tensors, smat):
@@ -234,28 +234,27 @@ def getAllTensorsEdges(edge, smat):
 def absorbWeights(tensor, edgesNidx, weights):
     """
     Absorb neighboring lambda weights into tensor.
-    :param tensor: [tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
+    :param tensor: tensor
     :param edgesNidx: list of two lists [[edges], [indices]].
     :param weights: list of lambda weights.
     :return: the new tensor list [new_tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
     """
     for i in range(len(edgesNidx[0])):
-        tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))), weights[int(edgesNidx[0][i])], [int(edgesNidx[1][i])],
-                              list(range(len(tensor[0].shape))))
+        tensor = np.einsum(tensor, list(range(len(tensor.shape))), weights[int(edgesNidx[0][i])], [int(edgesNidx[1][i])], list(range(len(tensor.shape))))
     return tensor
 
 
 def absorbSqrtWeights(tensor, edgesNidx, weights):
     """
     Absorb square root of neighboring lambda weights into tensor.
-    :param tensor: [tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
+    :param tensor: tensor
     :param edgesNidx: list of two lists [[edges], [indices]].
     :param weights: list of lambda weights.
     :return: the new tensor list [new_tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
     """
     for i in range(len(edgesNidx[0])):
-        tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))), np.sqrt(weights[int(edgesNidx[0][i])]),
-                              [int(edgesNidx[1][i])], list(range(len(tensor[0].shape))))
+        tensor = np.einsum(tensor, list(range(len(tensor.shape))), np.sqrt(weights[int(edgesNidx[0][i])]),
+                              [int(edgesNidx[1][i])], list(range(len(tensor.shape))))
     return tensor
 
 
@@ -287,14 +286,14 @@ def absorbWeights_twoSiteExpectationWithRectangularEnvironment(tensor, edgesNidx
 def absorbInverseWeights(tensor, edgesNidx, weights):
     """
     Absorb inverse neighboring lambda weights into tensor.
-    :param tensor: [tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
+    :param tensor: tensor
     :param edgesNidx: list of two lists [[edges], [indices]].
     :param weights: list of lambda weights.
     :return: the new tensor list [new_tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
     """
     for i in range(len(edgesNidx[0])):
-        tensor[0] = np.einsum(tensor[0], list(range(len(tensor[0].shape))),
-                              weights[int(edgesNidx[0][i])] ** (-1), [int(edgesNidx[1][i])], list(range(len(tensor[0].shape))))
+        tensor = np.einsum(tensor, list(range(len(tensor.shape))),
+                              weights[int(edgesNidx[0][i])] ** (-1), [int(edgesNidx[1][i])], list(range(len(tensor.shape))))
     return tensor
 
 
@@ -451,59 +450,51 @@ def updateDEFG(edge, tensors, weights, smat, doubleEdgeFactorGraph):
     doubleEdgeFactorGraph.factors['f' + str(jFactor[1][0])][1] = jFactor[0]
     doubleEdgeFactorGraph.nodes['n' + str(edge)][0] = len(weights[edge])
 
+
 ########################################################################################################################
-# ---------------------------------- gPEPS expectations and exact expectation functions --------------------------------
+#                                         Simple Update expectations and rdms                                          #
+########################################################################################################################
 
 
-def single_tensor_expectation(tensor_idx, TT, LL, smat, Oi):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
-    normalization = site_norm(tensor_idx, TT, LL, smat)
+def singleSiteExpectation(tensorIndex, tensors, weights, smat, localOp):
+    """
+    This function calculates the local expectation value of a single tensor network site using the weights as
+    environment.
+    :param tensorIndex: the index of the tensor in the structure matrix
+    :param tensors: list of tensors in the tensorNet
+    :param weights: list of weights
+    :param smat: the structure matrix
+    :param localOp: the local operator for the expectation value
+    :return: single site expectation
+    """
+    edgeNidx = getEdges(tensorIndex, smat)
+    site = absorbWeights(cp.copy(tensors[tensorIndex]), edgeNidx, weights)
+    siteConj = absorbWeights(np.conj(cp.copy(tensors[tensorIndex])), edgeNidx, weights)
+    normalization = siteNorm(tensorIndex, tensors, weights, smat)
 
-    env_edges = np.nonzero(smat[tensor_idx, :])[0]
-    env_legs = smat[tensor_idx, env_edges]
-    T = TT[tensor_idx]
-    T_conj = np.conj(TT[tensor_idx])
-
-    ## absorb its environment
-    for j in range(len(env_edges)):
-        T = np.einsum(T, range(len(T.shape)), LL[env_edges[j]], [env_legs[j]], range(len(T.shape)))
-        T_conj = np.einsum(T_conj, range(len(T_conj.shape)), LL[env_edges[j]], [env_legs[j]], range(len(T_conj.shape)))
-
-    T_idx = range(len(T.shape))
-    T_conj_idx = range(len(T_conj.shape))
-    T_conj_idx[0] = len(T_conj.shape)
-    operator_idx = [T_conj_idx[0], T_idx[0]]
-    expectation = ncon.ncon([T, T_conj, Oi], [T_idx, T_conj_idx, operator_idx])
-    return expectation / normalization
-
-
-def magnetization(TT, LL, smat, Oi):
-    # calculating the average magnetization per site
-    magnetization = 0
-    tensors_indices = range(len(TT))
-    for i in tensors_indices:
-        magnetization += single_tensor_expectation(i, TT, LL, smat, Oi)
-    magnetization /= len(TT)
-    return magnetization
+    # setting lists for ncon
+    siteIdx = list(range(len(site.shape)))
+    siteConjIdx = list(range(len(siteConj.shape)))
+    siteConjIdx[0] = len(siteConj.shape)
+    localOpIdx = [siteConjIdx[0], siteIdx[0]]
+    expectation = ncon.ncon([site, siteConj, localOp], [siteIdx, siteConjIdx, localOpIdx]) / normalization
+    return expectation
 
 
-def site_norm(tensor_idx, TT, LL, smat):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
-    env_edges = np.nonzero(smat[tensor_idx, :])[0]
-    env_legs = smat[tensor_idx, env_edges]
-    T = TT[tensor_idx]
-    T_conj = np.conj(TT[tensor_idx])
-
-    ## absorb its environment
-    for j in range(len(env_edges)):
-        T = np.einsum(T, range(len(T.shape)), LL[env_edges[j]], [env_legs[j]], range(len(T.shape)))
-        T_conj = np.einsum(T_conj, range(len(T_conj.shape)), LL[env_edges[j]], [env_legs[j]], range(len(T_conj.shape)))
-
-    T_idx = range(len(T.shape))
-    T_conj_idx = range(len(T_conj.shape))
-    normalization = np.einsum(T, T_idx, T_conj, T_conj_idx)
+def siteNorm(tensorIndex, tensors, weights, smat):
+    """
+    Calculate the normalization of a single tensor network site using the weights as environment (sam as calculating
+    this site expectation with np.eye(d)).
+    :param tensorIndex: the index of the tensor in the structure matrix
+    :param tensors: list of tensors in the tensorNet
+    :param weights: list of weights
+    :param smat: the structure matrix
+    :return: site normalization
+    """
+    edgeNidx = getEdges(tensorIndex, smat)
+    site = absorbWeights(cp.copy(tensors[tensorIndex]), edgeNidx, weights)
+    siteConj = absorbWeights(np.conj(cp.copy(tensors[tensorIndex])), edgeNidx, weights)
+    normalization = np.einsum(site, list(range(len(site.shape))), siteConj, list(range(len(siteConj.shape))))
     return normalization
 
 
@@ -522,10 +513,10 @@ def two_site_expectation(Ek, TT, LL, smat, Oij):
     i_dim, j_dim = getTensorsEdges(Ek, smat)
 
     ## (b) Absorb bond vectors (lambdas) to all Em != Ek of Ti, Tj tensors
-    Ti = absorbWeights(Ti, i_dim, LL)
-    Tj = absorbWeights(Tj, j_dim, LL)
-    Ti_conj = absorbWeights(Ti_conj, i_dim, LL)
-    Tj_conj = absorbWeights(Tj_conj, j_dim, LL)
+    Ti[0] = absorbWeights(Ti[0], i_dim, LL)
+    Tj[0] = absorbWeights(Tj[0], j_dim, LL)
+    Ti_conj[0] = absorbWeights(Ti_conj[0], i_dim, LL)
+    Tj_conj[0] = absorbWeights(Tj_conj[0], j_dim, LL)
 
     ## preparing list of tensors and indices for ncon function
     s = 1000
@@ -844,7 +835,7 @@ def trace_distance(a, b):
 def tensor_reduced_dm(tensor_idx, TT, LL, smat):
     TT = cp.deepcopy(TT)
     LL = cp.deepcopy(LL)
-    normalization = site_norm(tensor_idx, TT, LL, smat)
+    normalization = siteNorm(tensor_idx, TT, LL, smat)
     env_edges = np.nonzero(smat[tensor_idx, :])[0]
     env_legs = smat[tensor_idx, env_edges]
     T = cp.deepcopy(TT[tensor_idx])

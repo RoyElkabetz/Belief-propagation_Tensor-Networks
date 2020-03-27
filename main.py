@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 # tensor network parameters
 N = 4
 d = 2
-D = 3
+D = 2
 
 # initialize
 structureMat, incidenceMat = smg.finitePEPSobcStructureMatrixGenerator(N, N)
@@ -27,17 +27,19 @@ Opi = [Sx, Sy, Sz]
 Opj = [Sx, Sy, Sz]
 Op_field = np.eye(d)
 timeStep = 0.1
-interactionConstants = [1] * M
+interactionConstants = [-1] * M
 dE = 1e-5
 flag = 1
 counter = 0
 energyPerSite = []
+magZ0 = []
 
 # run simple update
 tensorsNew, lambdasNew = cp.deepcopy(tensors), cp.deepcopy(lambdas)
 while flag:
     energyPerSite.append(np.real(su.energy_per_site(tensorsNew, lambdasNew, structureMat, interactionConstants, 0,
                                                           Opi, Opj, Op_field)))
+    magZ0.append(su.singleSiteExpectation(0, tensors, lambdasNew, structureMat, Sz))
     tensorsNew, lambdasNew = su.simpleUpdate(tensors=tensorsNew,
                                                weights=lambdasNew,
                                                timeStep=timeStep,
@@ -57,4 +59,8 @@ while flag:
 
 plt.figure()
 plt.plot(range(counter), energyPerSite, 'o')
+plt.show()
+
+plt.figure()
+plt.plot(range(counter), magZ0, 'o')
 plt.show()
