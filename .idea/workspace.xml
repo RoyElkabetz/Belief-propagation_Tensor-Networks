@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Heisenberg_model_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/Heisenberg_model_function.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleUpdate.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -28,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="169">
-              <caret line="39" column="81" lean-forward="true" selection-start-line="39" selection-start-column="81" selection-end-line="39" selection-end-column="81" />
+            <state relative-caret-position="155">
+              <caret line="40" selection-start-line="40" selection-end-line="40" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -63,11 +63,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-328">
-              <caret line="452" selection-start-line="452" selection-end-line="452" />
+            <state relative-caret-position="239">
+              <caret line="689" column="4" selection-start-line="689" selection-start-column="4" selection-end-line="689" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ncon.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="287">
+              <caret line="269" selection-start-line="269" selection-end-line="269" />
             </state>
           </provider>
         </entry>
@@ -215,12 +224,12 @@
       <updated>1585223971321</updated>
       <workItem from="1585223974487" duration="1000000" />
       <workItem from="1585333546071" duration="1473000" />
-      <workItem from="1585337855853" duration="4694000" />
+      <workItem from="1585337855853" duration="9809000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7167000" />
+    <option name="totallyTimeSpent" value="12282000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="791" extended-state="6" />
@@ -241,7 +250,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32904148" />
       <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info anchor="bottom" id="Python Console" order="12" visible="true" weight="0.32904148" />
+      <window_info anchor="bottom" id="Python Console" order="12" weight="0.32904148" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -256,11 +265,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/SimpleUpdate.py</url>
-          <line>515</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Heisenberg_model_function.py</url>
           <line>212</line>
           <option name="timeStamp" value="4" />
@@ -270,7 +274,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QBPmodule$SimpleUpdate.coverage" NAME="SimpleUpdate Coverage Results" MODIFIED="1585333607852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QBPmodule$main.coverage" NAME="main Coverage Results" MODIFIED="1585333803200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QBPmodule$main.coverage" NAME="main Coverage Results" MODIFIED="1585418815980" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Heisenberg_model_function.py">
@@ -289,6 +293,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///anaconda3/lib/python3.7/site-packages/numpy/core/einsumfunc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="1355" selection-start-line="1355" selection-end-line="1355" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Heisenberg_model_main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="389">
@@ -299,27 +310,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///anaconda3/lib/python3.7/site-packages/numpy/core/einsumfunc.py">
+    <entry file="file://$PROJECT_DIR$/ncon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="1355" selection-start-line="1355" selection-end-line="1355" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-328">
-          <caret line="452" selection-start-line="452" selection-end-line="452" />
+        <state relative-caret-position="287">
+          <caret line="269" selection-start-line="269" selection-end-line="269" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="39" column="81" lean-forward="true" selection-start-line="39" selection-start-column="81" selection-end-line="39" selection-end-column="81" />
+        <state relative-caret-position="155">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="689" column="4" selection-start-line="689" selection-start-column="4" selection-end-line="689" selection-end-column="4" />
         </state>
       </provider>
     </entry>

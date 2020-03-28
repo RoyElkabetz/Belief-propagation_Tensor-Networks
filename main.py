@@ -37,9 +37,9 @@ magZ0 = []
 # run simple update
 tensorsNew, lambdasNew = cp.deepcopy(tensors), cp.deepcopy(lambdas)
 while flag:
-    energyPerSite.append(np.real(su.energy_per_site(tensorsNew, lambdasNew, structureMat, interactionConstants, 0,
-                                                          Opi, Opj, Op_field)))
-    magZ0.append(su.singleSiteExpectation(0, tensors, lambdasNew, structureMat, Sz))
+    energyPerSite.append(np.real(su.energyPerSite(tensorsNew, lambdasNew, structureMat, interactionConstants, 0,
+                                                  Opi, Opj, Op_field)))
+    magZ0.append(su.singleSiteExpectation(0, tensorsNew, lambdasNew, structureMat, Sz))
     tensorsNew, lambdasNew = su.simpleUpdate(tensors=tensorsNew,
                                                weights=lambdasNew,
                                                timeStep=timeStep,
@@ -64,3 +64,4 @@ plt.show()
 plt.figure()
 plt.plot(range(counter), magZ0, 'o')
 plt.show()
+

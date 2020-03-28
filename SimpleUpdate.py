@@ -38,8 +38,6 @@ def simpleUpdate(tensors,
     :param graph: the tensor network dual double-edge factor graph
     :return: updated tensors list and weights list
     """
-    tensors = cp.deepcopy(tensors)
-    weights = cp.deepcopy(weights)
     n, m = np.shape(smat)
     for Ek in range(m):
         lambda_k = weights[Ek]
@@ -148,11 +146,11 @@ def getTensors(edge, tensors, smat):
     """
     tensorNumber = np.nonzero(smat[:, edge])[0]
     tensorIndexAlongEdge = smat[tensorNumber, edge]
-    Ti = [tensors[tensorNumber[0]],
+    Ti = [cp.copy(tensors[tensorNumber[0]]),
           [tensorNumber[0], 'tensor_number'],
           [tensorIndexAlongEdge[0], 'tensor_index_along_edge']
           ]
-    Tj = [tensors[tensorNumber[1]],
+    Tj = [cp.copy(tensors[tensorNumber[1]]),
           [tensorNumber[1], 'tensor_number'],
           [tensorIndexAlongEdge[1], 'tensor_index_along_edge']
           ]
@@ -169,11 +167,11 @@ def getConjTensors(edge, tensors, smat):
     """
     tensorNumber = np.nonzero(smat[:, edge])[0]
     tensorIndexAlongEdge = smat[tensorNumber, edge]
-    Ti = [np.conj(tensors[tensorNumber[0]]),
+    Ti = [np.conj(cp.copy(tensors[tensorNumber[0]])),
           [tensorNumber[0], 'tensor_number'],
           [tensorIndexAlongEdge[0], 'tensor_index_along_edge']
           ]
-    Tj = [np.conj(tensors[tensorNumber[1]]),
+    Tj = [np.conj(cp.copy(tensors[tensorNumber[1]])),
           [tensorNumber[1], 'tensor_number'],
           [tensorIndexAlongEdge[1], 'tensor_index_along_edge']
           ]
@@ -472,7 +470,7 @@ def singleSiteExpectation(tensorIndex, tensors, weights, smat, localOp):
     siteConj = absorbWeights(np.conj(cp.copy(tensors[tensorIndex])), edgeNidx, weights)
     normalization = siteNorm(tensorIndex, tensors, weights, smat)
 
-    # setting lists for ncon
+    # setting lists for ncon.ncon
     siteIdx = list(range(len(site.shape)))
     siteConjIdx = list(range(len(siteConj.shape)))
     siteConjIdx[0] = len(siteConj.shape)
@@ -498,62 +496,99 @@ def siteNorm(tensorIndex, tensors, weights, smat):
     return normalization
 
 
-def two_site_expectation(Ek, TT, LL, smat, Oij):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
+def doubleSiteExpectation(commonEdge, tensors, weights, smat, LocalOp):
+    """
+    Calculating the normalized double site expectation value <psi|O|psi> / <psi|psi> on a given common edge of two
+    tensor network sites. The environment of the two sites are calculated using the simple update weights.
+    :param commonEdge: the two sites common edge
+    :param tensors: the TensorNet list of tensors
+    :param weights: the TensorNet list of weights
+    :param smat: structure matrix
+    :param LocalOp: the local operator
+    :return: double site expectation
+    """
+    commonWeights = cp.copy(weights[commonEdge])
+    siteI, siteJ = getTensors(commonEdge, tensors, smat)
+    siteIconj, siteJconj = getConjTensors(commonEdge, tensors, smat)
+    edgeNidxI, edgeNidxJ = getTensorsEdges(commonEdge, smat)
+    siteI[0] = absorbWeights(siteI[0], edgeNidxI, weights)
+    siteJ[0] = absorbWeights(siteJ[0], edgeNidxJ, weights)
+    siteIconj[0] = absorbWeights(siteIconj[0], edgeNidxI, weights)
+    siteJconj[0] = absorbWeights(siteJconj[0], edgeNidxJ, weights)
 
-    # calculating the two site normalized expectation given a mutual edge Ek of those two sites (tensors) and the operator Oij
-    lamda_k = cp.copy(LL[Ek])
+    # setting lists for ncon.ncon
+    s = 10000
+    t = 20000
+    commonWeightIdx = [t, t + 1]
+    commonWeightConjIdx = [t + 2, t + 3]
+    LocalOpIdx = [s, s + 1, s + 2, s + 3]  # (i, j, i', j')
 
-    ## (a) Find tensors Ti, Tj and their corresponding legs connected along edge Ek.
-    Ti, Tj = getTensors(Ek, TT, smat)
-    Ti_conj, Tj_conj = getConjTensors(Ek, TT, smat)
+    siteIidx = list(range(len(siteI[0].shape)))
+    siteIconjIdx = list(range(len(siteIconj[0].shape)))
+    siteIidx[0] = LocalOpIdx[0]  # i
+    siteIconjIdx[0] = LocalOpIdx[2]  # i'
+    siteIidx[siteI[2][0]] = commonWeightIdx[0]
+    siteIconjIdx[siteIconj[2][0]] = commonWeightConjIdx[0]
 
-    # collecting all neighboring (edges, dimensions) without the Ek (edge, dimension)
-    i_dim, j_dim = getTensorsEdges(Ek, smat)
+    siteJidx = list(range(len(siteI[0].shape) + 1, len(siteI[0].shape) + 1 + len(siteJ[0].shape)))
+    siteJconjIdx = list(range(len(siteIconj[0].shape) + 1, len(siteIconj[0].shape) + 1 + len(siteJconj[0].shape)))
+    siteJidx[0] = LocalOpIdx[1]  # j
+    siteJconjIdx[0] = LocalOpIdx[3]  # j'
+    siteJidx[siteJ[2][0]] = commonWeightIdx[1]
+    siteJconjIdx[siteJconj[2][0]] = commonWeightConjIdx[1]
 
-    ## (b) Absorb bond vectors (lambdas) to all Em != Ek of Ti, Tj tensors
-    Ti[0] = absorbWeights(Ti[0], i_dim, LL)
-    Tj[0] = absorbWeights(Tj[0], j_dim, LL)
-    Ti_conj[0] = absorbWeights(Ti_conj[0], i_dim, LL)
-    Tj_conj[0] = absorbWeights(Tj_conj[0], j_dim, LL)
+    # double site expectation calculation
+    tensorsList = [siteI[0], siteIconj[0], siteJ[0], siteJconj[0], LocalOp, np.diag(commonWeights), np.diag(commonWeights)]
+    indicesList = [siteIidx, siteIconjIdx, siteJidx, siteJconjIdx, LocalOpIdx, commonWeightIdx, commonWeightConjIdx]
+    norm = doubleSiteNorm(commonEdge, tensors, weights, smat)
+    expectation = ncon.ncon(tensorsList, indicesList) / norm
+    return expectation
 
-    ## preparing list of tensors and indices for ncon function
-    s = 1000
-    t = 2000
-    lamda_k_idx = [t, t + 1]
-    lamda_k_conj_idx = [t + 2, t + 3]
-    Oij_idx = [s, s + 1, s + 2, s + 3]  # (i, j, i', j')
 
-    Ti_idx = list(range(len(Ti[0].shape)))
-    Ti_conj_idx = list(range(len(Ti_conj[0].shape)))
-    Ti_idx[0] = Oij_idx[0]  # i
-    Ti_conj_idx[0] = Oij_idx[2]  # i'
-    Ti_idx[Ti[2][0]] = lamda_k_idx[0]
-    Ti_conj_idx[Ti_conj[2][0]] = lamda_k_conj_idx[0]
+def doubleSiteNorm(commonEdge, tensors, weights, smat):
+    """
+    Calculating the double site normalization <psi|psi> of two TensorNet sites sharing a common edge using the simple update
+    weights as environment.
+    :param commonEdge: the two sites common edge
+    :param tensors: the TensorNet list of tensors
+    :param weights: the TensorNet list of weights
+    :param smat: structure matrix
+    :return: double site normalization
+    """
+    commonWeights = cp.copy(weights[commonEdge])
+    siteI, siteJ = getTensors(commonEdge, tensors, smat)
+    siteIconj, siteJconj = getConjTensors(commonEdge, tensors, smat)
+    edgeNidxI, edgeNidxJ = getTensorsEdges(commonEdge, smat)
+    siteI[0] = absorbWeights(siteI[0], edgeNidxI, weights)
+    siteJ[0] = absorbWeights(siteJ[0], edgeNidxJ, weights)
+    siteIconj[0] = absorbWeights(siteIconj[0], edgeNidxI, weights)
+    siteJconj[0] = absorbWeights(siteJconj[0], edgeNidxJ, weights)
 
-    Tj_idx = list(range(len(Ti[0].shape) + 1, len(Ti[0].shape) + 1 + len(Tj[0].shape)))
-    Tj_conj_idx = list(range(len(Ti_conj[0].shape) + 1, len(Ti_conj[0].shape) + 1 + len(Tj_conj[0].shape)))
-    Tj_idx[0] = Oij_idx[1]  # j
-    Tj_conj_idx[0] = Oij_idx[3]  # j'
-    Tj_idx[Tj[2][0]] = lamda_k_idx[1]
-    Tj_conj_idx[Tj_conj[2][0]] = lamda_k_conj_idx[1]
+    # setting lists for ncon.ncon
+    s = 10000
+    t = 20000
+    commonWeightIdx = [t, t + 1]
+    commonWeightConjIdx = [t + 2, t + 3]
 
-    # two site expectation calculation
-    tensors = [Ti[0], Ti_conj[0], Tj[0], Tj_conj[0], Oij, np.diag(lamda_k), np.diag(lamda_k)]
-    indices = [Ti_idx, Ti_conj_idx, Tj_idx, Tj_conj_idx, Oij_idx, lamda_k_idx, lamda_k_conj_idx]
-    two_site_expec = ncon.ncon(tensors, indices)
+    siteIidx = list(range(len(siteI[0].shape)))
+    siteIconjIdx = list(range(len(siteIconj[0].shape)))
+    siteIidx[0] = s  # i
+    siteIconjIdx[0] = s  # i'
+    siteIidx[siteI[2][0]] = commonWeightIdx[0]
+    siteIconjIdx[siteIconj[2][0]] = commonWeightConjIdx[0]
 
-    ## prepering list of tensors and indices for two site normalization
-    p = Ti[0].shape[0]
-    eye = np.reshape(np.eye(p * p), (p, p, p, p))
-    eye_idx = Oij_idx
+    siteJidx = list(range(len(siteI[0].shape) + 1, len(siteI[0].shape) + 1 + len(siteJ[0].shape)))
+    siteJconjIdx = list(range(len(siteIconj[0].shape) + 1, len(siteIconj[0].shape) + 1 + len(siteJconj[0].shape)))
+    siteJidx[0] = s + 1  # j
+    siteJconjIdx[0] = s + 1  # j'
+    siteJidx[siteJ[2][0]] = commonWeightIdx[1]
+    siteJconjIdx[siteJconj[2][0]] = commonWeightConjIdx[1]
 
-    tensors = [Ti[0], Ti_conj[0], Tj[0], Tj_conj[0], eye, np.diag(lamda_k), np.diag(lamda_k)]
-    indices = [Ti_idx, Ti_conj_idx, Tj_idx, Tj_conj_idx, eye_idx, lamda_k_idx, lamda_k_conj_idx]
-    two_site_norm = ncon.ncon(tensors, indices)
-    two_site_expec /= two_site_norm
-    return two_site_expec
+    # double site normalization calculation
+    tensorsList = [siteI[0], siteIconj[0], siteJ[0], siteJconj[0], np.diag(commonWeights), np.diag(commonWeights)]
+    indicesList = [siteIidx, siteIconjIdx, siteJidx, siteJconjIdx, commonWeightIdx, commonWeightConjIdx]
+    norm = ncon.ncon(tensorsList, indicesList)
+    return norm
 
 
 def two_site_reduced_density_matrix(Ek, TT, LL, smat):
@@ -650,19 +685,29 @@ def conjTN(TT):
     return TTconj
 
 
-def energy_per_site(TT, LL, smat, Jk, h, Opi, Opj, Op_field):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
-    # calculating the normalized energy per site(tensor)
-    p = Opi[0].shape[0]
-    Aij = np.zeros((p ** 2, p ** 2), dtype=complex)
-    for i in range(len(Opi)):
-        Aij += np.kron(Opi[i], Opj[i])
+def energyPerSite(tensors, weights, smat, interactionConst, filedConst, iSiteOp, jSiteOp, fieldOp):
+    """
+    
+    :param tensors:
+    :param weights:
+    :param smat:
+    :param interactionConst:
+    :param filedConst:
+    :param iSiteOp:
+    :param jSiteOp:
+    :param fieldOp:
+    :return:
+    """
     energy = 0
+    d = iSiteOp[0].shape[0]
+    Aij = np.zeros((d ** 2, d ** 2), dtype=complex)
+    for i in range(len(iSiteOp)):
+        Aij += np.kron(iSiteOp[i], jSiteOp[i])
     n, m = np.shape(smat)
-    for Ek in range(m):
-        Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(p), Op_field) + np.kron(Op_field, np.eye(p))), (p, p, p, p))
-        energy += two_site_expectation(Ek, TT, LL, smat, Oij)
+    for edge in range(m):
+        ijLocalOp = np.reshape(-interactionConst[edge] * Aij - 0.25 * filedConst
+                         * (np.kron(np.eye(d), fieldOp) + np.kron(fieldOp, np.eye(d))), (d, d, d, d))
+        energy += doubleSiteExpectation(edge, tensors, weights, smat, ijLocalOp)
     energy /= n
     return energy
 

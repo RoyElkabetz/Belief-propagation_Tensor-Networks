@@ -206,8 +206,8 @@ def Heisenberg_PEPS_gPEPS(N, M, Jk, dE, D_max, bc, t_list, iterations):
             #print('N, D max, dt, j = ', N * M, D_max, dt, j)
             TT1, LL1 = BP.simpleUpdate(TT, LL, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'gPEPS')
             TT2, LL2 = BP.simpleUpdate(TT1, LL1, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'gPEPS')
-            energy1 = BP.energy_per_site(TT1, LL1, smat, Jk, h, Opi, Opj, Op_field)
-            energy2 = BP.energy_per_site(TT2, LL2, smat, Jk, h, Opi, Opj, Op_field)
+            energy1 = BP.energyPerSite(TT1, LL1, smat, Jk, h, Opi, Opj, Op_field)
+            energy2 = BP.energyPerSite(TT2, LL2, smat, Jk, h, Opi, Opj, Op_field)
 
             gPEPS_energy.append(energy1)
             gPEPS_energy.append(energy2)
