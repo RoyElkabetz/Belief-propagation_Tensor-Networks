@@ -178,7 +178,7 @@ def randomPEPSmainFunction():
                     rho_SU_bmps_single[dp_idx].append(np.einsum(rho_SU_bmps[dp_idx][jj], [0, 1, 2, 2], [0, 1]))
                 rho_SU_bmps_single[dp_idx].append(np.einsum(rho_SU_bmps[dp_idx][jj], [1, 1, 2, 3], [2, 3]))
             '''
-            TT_SU_0_bmps = BP.absorb_all_sqrt_bond_vectors(TT_SU_0_bmps, LL_SU_0, smat)
+            TT_SU_0_bmps = BP.absorbAllTensorNetWeights(TT_SU_0_bmps, LL_SU_0, smat)
             TT_SU_0_bmps = tnf.PEPS_OBC_broadcast_to_Itai(TT_SU_0_bmps, [N, M], p, data_params[5][1][ii])
             SU_0_peps = bmps.peps(N, M)
             for t, T in enumerate(TT_SU_0_bmps):

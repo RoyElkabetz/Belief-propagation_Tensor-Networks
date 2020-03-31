@@ -591,64 +591,61 @@ def doubleSiteNorm(commonEdge, tensors, weights, smat):
     return norm
 
 
-def two_site_reduced_density_matrix(Ek, TT, LL, smat):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
+def doubleSiteRDM(commonEdge, tensors, weights, smat):
+    """
+    Calculating the double site reduced density matrix rho_{ii', jj'} using the simple update weights as environments.
+    :param commonEdge: the two tensorNet
+    :param tensors: the TensorNet tensors list
+    :param weights: the TensorNet weights list
+    :param smat: structure matrix
+    :return: two site RDM rho_{i * i', j * j'} when {i, j} relate to the ket and {i', j'} to the bra.
+    """
+    commonWeight = cp.copy(weights[commonEdge])
+    SiteI, SiteJ = getTensors(commonEdge, tensors, smat)
+    SiteIconj, siteJconj = getConjTensors(commonEdge, tensors, smat)
+    edgeNidxI, edgeNidxJ = getTensorsEdges(commonEdge, smat)
+    SiteI[0] = absorbWeights(SiteI[0], edgeNidxI, weights)
+    SiteJ[0] = absorbWeights(SiteJ[0], edgeNidxJ, weights)
+    SiteIconj[0] = absorbWeights(SiteIconj[0], edgeNidxI, weights)
+    siteJconj[0] = absorbWeights(siteJconj[0], edgeNidxJ, weights)
 
-    # calculating the two site reduced density matrix given a mutual edge Ek of those two sites (tensors)
-    lamda_k = cp.copy(LL[Ek])
+    ## setting lists of tensors and indices for ncon.ncon
+    t = 20000
+    commonEdgeIdx = [t, t + 1]
+    commonEdgeConjIdx = [t + 2, t + 3]
 
-    ## (a) Find tensors Ti, Tj and their corresponding legs connected along edge Ek.
-    Ti, Tj = getTensors(Ek, TT, smat)
-    Ti_conj, Tj_conj = getConjTensors(Ek, TT, smat)
+    siteIidx = list(range(len(SiteI[0].shape)))
+    siteIconjIdx = list(range(len(SiteIconj[0].shape)))
+    siteIidx[0] = -1  # i
+    siteIconjIdx[0] = -2  # i'
+    siteIidx[SiteI[2][0]] = commonEdgeIdx[0]
+    siteIconjIdx[SiteIconj[2][0]] = commonEdgeConjIdx[0]
 
-    # collecting all neighboring (edges, dimensions) without the Ek (edge, dimension)
-    i_dim, j_dim = getTensorsEdges(Ek, smat)
-
-    ## (b) Absorb bond vectors (lambdas) to all Em != Ek of Ti, Tj tensors
-    Ti = absorbWeights(Ti, i_dim, LL)
-    Tj = absorbWeights(Tj, j_dim, LL)
-    Ti_conj = absorbWeights(Ti_conj, i_dim, LL)
-    Tj_conj = absorbWeights(Tj_conj, j_dim, LL)
-
-    ## preparing list of tensors and indices for ncon function
-
-    t = 2000
-    lamda_k_idx = [t, t + 1]
-    lamda_k_conj_idx = [t + 2, t + 3]
-
-    Ti_idx = range(len(Ti[0].shape))
-    Ti_conj_idx = range(len(Ti_conj[0].shape))
-    Ti_idx[0] = -1  # i
-    Ti_conj_idx[0] = -3  # i'
-    Ti_idx[Ti[2][0]] = lamda_k_idx[0]
-    Ti_conj_idx[Ti_conj[2][0]] = lamda_k_conj_idx[0]
-
-    Tj_idx = range(len(Ti[0].shape) + 1, len(Ti[0].shape) + 1 + len(Tj[0].shape))
-    Tj_conj_idx = range(len(Ti_conj[0].shape) + 1, len(Ti_conj[0].shape) + 1 + len(Tj_conj[0].shape))
-    Tj_idx[0] = -2  # j
-    Tj_conj_idx[0] = -4  # j'
-    Tj_idx[Tj[2][0]] = lamda_k_idx[1]
-    Tj_conj_idx[Tj_conj[2][0]] = lamda_k_conj_idx[1]
+    siteJidx = list(range(len(SiteI[0].shape) + 1, len(SiteI[0].shape) + 1 + len(SiteJ[0].shape)))
+    siteJconjIdx = list(range(len(SiteIconj[0].shape) + 1, len(SiteIconj[0].shape) + 1 + len(siteJconj[0].shape)))
+    siteJidx[0] = -3  # j
+    siteJconjIdx[0] = -4  # j'
+    siteJidx[SiteJ[2][0]] = commonEdgeIdx[1]
+    siteJconjIdx[siteJconj[2][0]] = commonEdgeConjIdx[1]
 
     # two site expectation calculation
-    tensors = [Ti[0], Ti_conj[0], Tj[0], Tj_conj[0], np.diag(lamda_k), np.diag(lamda_k)]
-    indices = [Ti_idx, Ti_conj_idx, Tj_idx, Tj_conj_idx, lamda_k_idx, lamda_k_conj_idx]
-    rdm = ncon.ncon(tensors, indices)
-    rdm = rdm.reshape(rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3])
+    tensors = [SiteI[0], SiteIconj[0], SiteJ[0], siteJconj[0], np.diag(commonWeight), np.diag(commonWeight)]
+    indices = [siteIidx, siteIconjIdx, siteJidx, siteJconjIdx, commonEdgeIdx, commonEdgeConjIdx]
+    rdm = ncon.ncon(tensors, indices)  # rho_{i, i', j, j'}
+    rdm = rdm.reshape(rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3])  # rho_{i * i', j * j'}
     rdm /= np.trace(rdm)
     return rdm
 
 
-def two_site_expectation_with_environment(Ek, env_size, network_shape, TT1, LL1, smat, Oij):
-    TT = cp.deepcopy(TT1)
-    TTconj = conjTN(cp.deepcopy(TT1))
-    LL = cp.deepcopy(LL1)
-    p = Oij.shape[0]
+def PEPSdoubleSiteExpectationRectEnvironment(commonEdge, envSize, networkShape, tensors, weights, smat, localOp):
+    TT = cp.deepcopy(tensors)
+    TTconj = conjTN(cp.deepcopy(tensors))
+    LL = cp.deepcopy(weights)
+    p = localOp.shape[0]
     Iop = np.eye(p ** 2).reshape(p, p, p, p)
 
     # get th environment matrix and the lists of inside and outside edges
-    emat = tnf.PEPS_OBC_edge_rect_env(Ek, smat, network_shape, env_size)
+    emat = tnf.PEPS_OBC_edge_rect_env(commonEdge, smat, networkShape, envSize)
     inside, outside = tnf.PEPS_OBC_divide_edge_regions(emat, smat)
     omat = np.arange(smat.shape[0]).reshape(emat.shape)
     tensors_indices = omat[np.nonzero(emat > -1)]
@@ -660,22 +657,24 @@ def two_site_expectation_with_environment(Ek, env_size, network_shape, TT1, LL1,
         TTconj[t] = absorbWeights_twoSiteExpectationWithRectangularEnvironment(TTconj[t], edge_leg, LL, inside, outside)
 
     # lists and ncon
-    t_list, i_list, o_list = nlg.ncon_list_generator_two_site_expectation_with_env_peps_obc(TT, TTconj, Oij, smat, emat, Ek, tensors_indices, inside, outside)
-    t_list_n, i_list_n, o_list_n = nlg.ncon_list_generator_two_site_expectation_with_env_peps_obc(TT, TTconj, Iop, smat, emat, Ek, tensors_indices, inside, outside)
+    t_list, i_list, o_list = nlg.ncon_list_generator_two_site_expectation_with_env_peps_obc(TT, TTconj, localOp, smat, emat, commonEdge, tensors_indices, inside, outside)
+    t_list_n, i_list_n, o_list_n = nlg.ncon_list_generator_two_site_expectation_with_env_peps_obc(TT, TTconj, Iop, smat, emat, commonEdge, tensors_indices, inside, outside)
     expec = ncon.ncon(t_list, i_list, o_list)
     norm = ncon.ncon(t_list_n, i_list_n, o_list_n)
     expectation = expec / norm
     return expectation
 
 
-def two_site_exact_expectation(TT, LL, smat, edge, operator):
-    TTstar = conjTN(TT)
-    TT_tilde = absorb_all_sqrt_bond_vectors(TT, LL, smat)
-    TTstar_tilde = absorb_all_sqrt_bond_vectors(TTstar, LL, smat)
-    T_list, idx_list = nlg.ncon_list_generator_two_site_exact_expectation_peps(TT_tilde, TTstar_tilde, smat, edge, operator)
-    T_list_norm, idx_list_norm = nlg.ncon_list_generator_braket_peps(TT_tilde, TTstar_tilde, smat)
-    exact_expectation = ncon.ncon(T_list, idx_list) / ncon.ncon(T_list_norm, idx_list_norm)
-    return exact_expectation
+def doubleSiteExactExpectation(tensors, weights, smat, commonEdge, localOp):
+    tensors = cp.deepcopy(tensors)
+    weights = cp.deepcopy(weights)
+    tensorsConj = conjTN(tensors)
+    tensorsA = absorbAllTensorNetWeights(tensors, weights, smat)
+    tensorsConjA = absorbAllTensorNetWeights(tensorsConj, weights, smat)
+    tensorsList, idxList = nlg.ncon_list_generator_two_site_exact_expectation_peps(tensorsA, tensorsConjA, smat, commonEdge, localOp)
+    tensorsListNorm, idxListNorm = nlg.ncon_list_generator_braket_peps(tensorsA, tensorsConjA, smat)
+    exactExpectation = ncon.ncon(tensorsList, idxList) / ncon.ncon(tensorsListNorm, idxListNorm)
+    return exactExpectation
 
 
 def conjTN(TT):
@@ -687,16 +686,16 @@ def conjTN(TT):
 
 def energyPerSite(tensors, weights, smat, interactionConst, filedConst, iSiteOp, jSiteOp, fieldOp):
     """
-    
-    :param tensors:
-    :param weights:
-    :param smat:
-    :param interactionConst:
-    :param filedConst:
-    :param iSiteOp:
-    :param jSiteOp:
-    :param fieldOp:
-    :return:
+    Calculating the energy per site of a given TensorNet in the simple update method with weights as environments.
+    :param tensors: list of tensors in the TensorNet
+    :param weights: list of weights in the TensorNet
+    :param smat: structure matrix
+    :param interactionConst: the J_{ij} interaction constants of the Hamiltonian
+    :param filedConst: the field constant h
+    :param iSiteOp: i site operators i.e. [X, Y, Z]
+    :param jSiteOp: j site operators i.e. [X, Y, Z]
+    :param fieldOp: field operators i.e. [X]
+    :return: the energy per site of a TensorNet
     """
     energy = 0
     d = iSiteOp[0].shape[0]
@@ -725,7 +724,7 @@ def energy_per_site_with_environment(network_shape, env_size, TT, LL, smat, Jk, 
     for Ek in range(m):
         print(Ek)
         Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(p), Op_field) + np.kron(Op_field, np.eye(p))), (p, p, p, p))
-        energy += two_site_expectation_with_environment(Ek, env_size, network_shape, TT, LL, smat, Oij)
+        energy += PEPSdoubleSiteExpectationRectEnvironment(Ek, env_size, network_shape, TT, LL, smat, Oij)
     energy /= n
     return energy
 
@@ -742,7 +741,7 @@ def exact_energy_per_site(TT, LL, smat, Jk, h, Opi, Opj, Op_field):
     n, m = np.shape(smat)
     for Ek in range(m):
         Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(p), Op_field) + np.kron(Op_field, np.eye(p))), (p, p, p, p))
-        energy += two_site_exact_expectation(TT, LL, smat, Ek, Oij)
+        energy += doubleSiteExactExpectation(TT, LL, smat, Ek, Oij)
     energy /= n
     return energy
 
@@ -900,16 +899,12 @@ def tensor_reduced_dm(tensor_idx, TT, LL, smat):
     return reduced_dm / normalization
 
 
-def absorb_all_sqrt_bond_vectors(TT, LL, smat):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
-    n = len(TT)
+def absorbAllTensorNetWeights(tensors, weights, smat):
+    n = len(tensors)
     for i in range(n):
-        edges = np.nonzero(smat[i, :])[0]
-        legs = smat[i, edges]
-        for j in range(len(edges)):
-            TT[i] = np.einsum(TT[i], range(len(TT[i].shape)), np.sqrt(LL[edges[j]]), [legs[j]], range(len(TT[i].shape)))
-    return TT
+        edgeNidx = getEdges(i, smat)
+        tensors[i] = absorbSqrtWeights(tensors[i], edgeNidx, weights)
+    return tensors
 
 
 # ---------------------------------- BP truncation  ---------------------------------
@@ -959,7 +954,7 @@ def BPupdate_single_edge(TT, LL, smat, Dmax, Ek, graph):
 
 def PEPStoDEnFG_transform(graph, TT, LL, smat):
     # generate the double edge factor graph from PEPS
-    factors_list = absorb_all_sqrt_bond_vectors(TT, LL, smat)
+    factors_list = absorbAllTensorNetWeights(TT, LL, smat)
 
     # Adding virtual nodes
     n, m = np.shape(smat)

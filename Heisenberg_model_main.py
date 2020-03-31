@@ -151,7 +151,7 @@ for D_idx, D in enumerate(data_params[5][1]):
         #    E_BP_factor_belief.append(np.real(BP.BP_energy_per_site_using_factor_belief_with_environment(graph, e, [N, M], smat, Jk, h, Opi, Opj, Op_field)))
 
         Dp = [D ** 2, 2 * (D ** 2)]
-        TT_BP_bmps = BP.absorb_all_sqrt_bond_vectors(TT_BP_bmps, LL_BP, smat)
+        TT_BP_bmps = BP.absorbAllTensorNetWeights(TT_BP_bmps, LL_BP, smat)
         TT_BP_bmps = tnf.PEPS_OBC_broadcast_to_Itai(TT_BP_bmps, [N, M], p, D)
         BP_peps = bmps.peps(N, M)
         for t, T in enumerate(TT_BP_bmps):
@@ -165,7 +165,7 @@ for D_idx, D in enumerate(data_params[5][1]):
                 rho_BP_bmps_sum += rho_BP_bmps[i]
             E_BP_bmps[D_idx, dp_idx] = np.real(np.einsum(rho_BP_bmps_sum, [0, 1, 2, 3], hij, [0, 2, 1, 3]) / (N * M))
 
-        TT_gPEPS_bmps = BP.absorb_all_sqrt_bond_vectors(TT_gPEPS_bmps, LL_gPEPS, smat)
+        TT_gPEPS_bmps = BP.absorbAllTensorNetWeights(TT_gPEPS_bmps, LL_gPEPS, smat)
         TT_gPEPS_bmps = tnf.PEPS_OBC_broadcast_to_Itai(TT_gPEPS_bmps, [N, M], p, D)
         gPEPS_peps = bmps.peps(N, M)
         for t, T in enumerate(TT_gPEPS_bmps):
