@@ -151,7 +151,7 @@ def randomPEPSmainFunction():
         #
 
             for i in range(len(TT_SU)):
-                rho_SU.append(BP.tensor_reduced_dm(i, TT_SU, LL_SU, smat))
+                rho_SU.append(BP.singleSiteRDM(i, TT_SU, LL_SU, smat))
                 #rho_SU_0.append(BP.tensor_reduced_dm(i, TT_SU_0, LL_SU_0, smat))
             rho_BP = graph.rdm_using_factors()
 

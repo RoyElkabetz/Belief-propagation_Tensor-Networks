@@ -639,7 +639,7 @@ def doubleSiteRDM(commonEdge, tensors, weights, smat):
 
 def PEPSdoubleSiteExpectationRectEnvironment(commonEdge, envSize, networkShape, tensors, weights, smat, localOp):
     TT = cp.deepcopy(tensors)
-    TTconj = conjTN(cp.deepcopy(tensors))
+    TTconj = conjTensorNet(cp.deepcopy(tensors))
     LL = cp.deepcopy(weights)
     p = localOp.shape[0]
     Iop = np.eye(p ** 2).reshape(p, p, p, p)
@@ -665,10 +665,19 @@ def PEPSdoubleSiteExpectationRectEnvironment(commonEdge, envSize, networkShape, 
     return expectation
 
 
-def doubleSiteExactExpectation(tensors, weights, smat, commonEdge, localOp):
+def PEPSdoubleSiteExactExpectation(tensors, weights, smat, commonEdge, localOp):
+    """
+    Caluclating PEPS local operator exact expectation value by contracting the whole TensorNet.
+    :param tensors: the TensorNet tensors list
+    :param weights: the TensorNet weights list
+    :param smat: structure matrix
+    :param commonEdge: the common edge of the tow tensors
+    :param localOp: the local operator
+    :return: exact expectation value
+    """
     tensors = cp.deepcopy(tensors)
     weights = cp.deepcopy(weights)
-    tensorsConj = conjTN(tensors)
+    tensorsConj = conjTensorNet(tensors)
     tensorsA = absorbAllTensorNetWeights(tensors, weights, smat)
     tensorsConjA = absorbAllTensorNetWeights(tensorsConj, weights, smat)
     tensorsList, idxList = nlg.ncon_list_generator_two_site_exact_expectation_peps(tensorsA, tensorsConjA, smat, commonEdge, localOp)
@@ -677,11 +686,16 @@ def doubleSiteExactExpectation(tensors, weights, smat, commonEdge, localOp):
     return exactExpectation
 
 
-def conjTN(TT):
-    TTconj = []
-    for i in range(len(TT)):
-        TTconj.append(np.conj(TT[i]))
-    return TTconj
+def conjTensorNet(tensors):
+    """
+    Given a TensorNet list of tensors returns the list of complex conjugate tensors
+    :param tensors: the TensorNet list of tensors
+    :return: list of complex conjugate tensors
+    """
+    tensorsConj = []
+    for i in range(len(tensors)):
+        tensorsConj.append(np.conj(tensors[i]))
+    return tensorsConj
 
 
 def energyPerSite(tensors, weights, smat, interactionConst, filedConst, iSiteOp, jSiteOp, fieldOp):
@@ -711,37 +725,59 @@ def energyPerSite(tensors, weights, smat, interactionConst, filedConst, iSiteOp,
     return energy
 
 
-def energy_per_site_with_environment(network_shape, env_size, TT, LL, smat, Jk, h, Opi, Opj, Op_field):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
-    # calculating the normalized energy per site(tensor)
-    p = Opi[0].shape[0]
-    Aij = np.zeros((p ** 2, p ** 2), dtype=complex)
-    for i in range(len(Opi)):
-        Aij += np.kron(Opi[i], Opj[i])
+def PEPSenergyPerSiteWithRectEnvironment(networkShape, envSize, tensors, weights, smat, Jk, h, iOp, jOp, fieldOp):
+    """
+
+    :param networkShape:
+    :param envSize:
+    :param tensors:
+    :param weights:
+    :param smat:
+    :param Jk:
+    :param h:
+    :param iOp:
+    :param jOp:
+    :param fieldOp:
+    :return:
+    """
+    tensors = cp.deepcopy(tensors)
+    weights = cp.deepcopy(weights)
     energy = 0
+    d = iOp[0].shape[0]
+    Aij = np.zeros((d ** 2, d ** 2), dtype=complex)
+    for i in range(len(iOp)):
+        Aij += np.kron(iOp[i], jOp[i])
     n, m = np.shape(smat)
     for Ek in range(m):
         print(Ek)
-        Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(p), Op_field) + np.kron(Op_field, np.eye(p))), (p, p, p, p))
-        energy += PEPSdoubleSiteExpectationRectEnvironment(Ek, env_size, network_shape, TT, LL, smat, Oij)
+        Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(d), fieldOp) + np.kron(fieldOp, np.eye(d))), (d, d, d, d))
+        energy += PEPSdoubleSiteExpectationRectEnvironment(Ek, envSize, networkShape, tensors, weights, smat, Oij)
     energy /= n
     return energy
 
 
-def exact_energy_per_site(TT, LL, smat, Jk, h, Opi, Opj, Op_field):
-    # calculating the normalized exact energy per site(tensor)
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
-    p = Opi[0].shape[0]
-    Aij = np.zeros((p ** 2, p ** 2), dtype=complex)
-    for i in range(len(Opi)):
-        Aij += np.kron(Opi[i], Opj[i])
+def PEPSexactEnergyPerSite(tensors, weights, smat, Jk, h, iOp, jOp, fieldOp):
+    """
+
+    :param tensors:
+    :param weights:
+    :param smat:
+    :param Jk:
+    :param h:
+    :param iOp:
+    :param jOp:
+    :param fieldOp:
+    :return:
+    """
     energy = 0
+    d = iOp[0].shape[0]
+    Aij = np.zeros((d ** 2, d ** 2), dtype=complex)
+    for i in range(len(iOp)):
+        Aij += np.kron(iOp[i], jOp[i])
     n, m = np.shape(smat)
     for Ek in range(m):
-        Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(p), Op_field) + np.kron(Op_field, np.eye(p))), (p, p, p, p))
-        energy += doubleSiteExactExpectation(TT, LL, smat, Ek, Oij)
+        Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(d), fieldOp) + np.kron(fieldOp, np.eye(d))), (d, d, d, d))
+        energy += PEPSdoubleSiteExactExpectation(tensors, weights, smat, Ek, Oij)
     energy /= n
     return energy
 
@@ -868,7 +904,7 @@ def BP_energy_per_site_using_rdm_belief(graph, smat, Jk, h, Opi, Opj, Op_field):
     return energy
 
 
-def trace_distance(a, b):
+def traceDistance(a, b):
     # returns the trace distance between the two density matrices a & b
     # d = 0.5 * norm(a - b)
     eigenvalues = np.linalg.eigvals(a - b)
@@ -876,27 +912,24 @@ def trace_distance(a, b):
     return d
 
 
-def tensor_reduced_dm(tensor_idx, TT, LL, smat):
-    TT = cp.deepcopy(TT)
-    LL = cp.deepcopy(LL)
-    normalization = siteNorm(tensor_idx, TT, LL, smat)
-    env_edges = np.nonzero(smat[tensor_idx, :])[0]
-    env_legs = smat[tensor_idx, env_edges]
-    T = cp.deepcopy(TT[tensor_idx])
-    T_conj = cp.deepcopy(np.conj(TT[tensor_idx]))
-
-    ## absorb its environment
-    for j in range(len(env_edges)):
-        T = np.einsum(T, range(len(T.shape)), LL[env_edges[j]], [env_legs[j]], range(len(T.shape)))
-        T_conj = np.einsum(T_conj, range(len(T_conj.shape)), LL[env_edges[j]], [env_legs[j]], range(len(T_conj.shape)))
-
-    T_idx = range(len(T.shape))
-    T_idx[0] = -1
-    T_conj_idx = range(len(T_conj.shape))
-    T_conj_idx[0] = -2
-    reduced_dm = ncon.ncon([T, T_conj], [T_idx, T_conj_idx])
-
-    return reduced_dm / normalization
+def singleSiteRDM(tensorIdx, tensors, weights, smat):
+    """
+    TensorNet single site rdm
+    :param tensorIdx: the tensor index in the structure matrix
+    :param tensors: the TensorNet list of tensors
+    :param weights: the TensorNet list of weights
+    :param smat: structure matrix
+    :return: single site rdm rho_{i, i'} where i relate to the ket and i' to the bra.
+    """
+    edgeNidx = getEdges(tensorIdx, smat)
+    tensor = absorbWeights(cp.copy(tensors[tensorIdx]), edgeNidx, weights)
+    tensorConj = absorbWeights(cp.copy(np.conj(tensors[tensorIdx])),edgeNidx, weights)
+    tIdx = list(range(len(tensor.shape)))
+    tIdx[0] = -1
+    tConjIdx = list(range(len(tensorConj.shape)))
+    tConjIdx[0] = -2
+    rdm = ncon.ncon([tensor, tensorConj], [tIdx, tConjIdx])
+    return rdm / np.trace(rdm)
 
 
 def absorbAllTensorNetWeights(tensors, weights, smat):

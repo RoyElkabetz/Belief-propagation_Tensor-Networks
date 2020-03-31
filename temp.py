@@ -379,9 +379,9 @@ for i in range(n):
     rho_SU_0_bmps16_single = rho_SU_0_bmps_single[0]
     rho_SU_0_bmps32_single = rho_SU_0_bmps_single[1]
     for j in range(n):
-        ttd_SU_bMPO[0][i] += BP.trace_distance(rho_SU_0_bmps16_single[j], rho_SU[j]) / n
-        ttd_SU_BP[0][i] += BP.trace_distance(rho_BP[j], rho_SU[j]) / n
-        ttd_bMPO16_bMPO32[0][i] += BP.trace_distance(rho_SU_0_bmps16_single[j], rho_SU_0_bmps32_single[j]) / n
+        ttd_SU_bMPO[0][i] += BP.traceDistance(rho_SU_0_bmps16_single[j], rho_SU[j]) / n
+        ttd_SU_BP[0][i] += BP.traceDistance(rho_BP[j], rho_SU[j]) / n
+        ttd_bMPO16_bMPO32[0][i] += BP.traceDistance(rho_SU_0_bmps16_single[j], rho_SU_0_bmps32_single[j]) / n
 av_ttd_SU_bMPO = np.sum(ttd_SU_bMPO) / n
 av_ttd_SU_BP = np.sum(ttd_SU_BP) / n
 av_ttd_bMPO16_bMPO32 = np.sum(ttd_bMPO16_bMPO32) / n
