@@ -136,6 +136,7 @@ def simpleUpdate(tensors,
 
     return tensors, weights
 
+
 ########################################################################################################################
 #                                                                                                                      #
 #                                        SIMPLE UPDATE AUXILIARY FUNCTIONS                                             #
@@ -955,7 +956,6 @@ def absorbAllTensorNetWeights(tensors, weights, smat):
 #                                  SIMPLE UPDATE with BELIEF PROPAGATION UPDATE (BPU)                                  #
 #                                                                                                                      #
 ########################################################################################################################
-
 
 
 def AllEdgesBPU(defg, tensors, weights, smat, Dmax):
