@@ -93,7 +93,7 @@ def Heisenberg_PEPS_BP(N, M, Jk, dE, D_max, t_max, epsilon, dumping, bc, t_list,
     # constructing the dual double-edge factor graph
 
     graph = defg.Graph()
-    graph = BP.PEPStoDEnFG_transform(graph, TT, LL, smat)
+    graph = BP.TNtoDEFGtransform(graph, TT, LL, smat)
     graph.sum_product(t_max, epsilon, dumping)
 
 
@@ -104,10 +104,10 @@ def Heisenberg_PEPS_BP(N, M, Jk, dE, D_max, t_max, epsilon, dumping, bc, t_list,
             #print('BP_N, D max, dt, j = ', N, D_max, dt, j)
             TT1, LL1 = BP.simpleUpdate(TT, LL, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'BP', graph)
             graph.sum_product(t_max, epsilon, dumping, 'init_with_old_messages')
-            energy1 = BP.BP_energy_per_site_using_factor_belief(graph, smat, Jk, h, Opi, Opj, Op_field)
+            energy1 = BP.BPenergyPerSite(graph, smat, Jk, h, Opi, Opj, Op_field)
             TT2, LL2 = BP.simpleUpdate(TT1, LL1, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'BP', graph)
             graph.sum_product(t_max, epsilon, dumping, 'init_with_old_messages')
-            energy2 = BP.BP_energy_per_site_using_factor_belief(graph, smat, Jk, h, Opi, Opj, Op_field)
+            energy2 = BP.BPenergyPerSite(graph, smat, Jk, h, Opi, Opj, Op_field)
 
             BP_energy.append(np.real(energy1))
             BP_energy.append(np.real(energy2))

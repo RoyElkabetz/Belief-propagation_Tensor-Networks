@@ -3,11 +3,15 @@ import numpy as np
 import ncon as ncon
 import copy as cp
 from scipy import linalg
-
 import StructureMatrixGenerator as tnf
 import ncon_lists_generator as nlg
 
 
+########################################################################################################################
+#                                                                                                                      #
+#                                              SIMPLE UPDATE ALGORITHM                                                 #
+#                                                                                                                      #
+########################################################################################################################
 
 
 def simpleUpdate(tensors,
@@ -128,17 +132,20 @@ def simpleUpdate(tensors,
 
         # single edge BP update (uncomment for single edge BP implemintation)
         if type == 'BP':
-            tensors, weights = BPupdate_single_edge(tensors, weights, smat, Dmax, Ek, graph)
+            tensors, weights = singleEdgeBPU(tensors, weights, smat, Dmax, Ek, graph)
 
     return tensors, weights
 
 ########################################################################################################################
-#                                        Simple Update auxiliary functions                                             #
+#                                                                                                                      #
+#                                        SIMPLE UPDATE AUXILIARY FUNCTIONS                                             #
+#                                                                                                                      #
 ########################################################################################################################
+
 
 def getTensors(edge, tensors, smat):
     """
-    Given an edge collect neighboring tensors.
+    Given an edge collect neighboring tensors and returns their copies.
     :param edge: edge number {0, 1, ..., m-1}.
     :param tensors: list of tensors.
     :param smat: structure matrix (n x m).
@@ -256,7 +263,7 @@ def absorbSqrtWeights(tensor, edgesNidx, weights):
     return tensor
 
 
-def absorbWeights_twoSiteExpectationWithRectangularEnvironment(tensor, edgesNidx, weights, edgesINenv, edgesOUTenv):
+def absorbWeightsTwoSiteExpectationWithRectangularEnvironment(tensor, edgesNidx, weights, edgesINenv, edgesOUTenv):
     """
     Given a tensor and two lists of edges inside and on the boundary (outside) of rectangular environment
     of two site expectation, this auxilary function absorb the tensor neighboring weights according to edges environment
@@ -450,7 +457,9 @@ def updateDEFG(edge, tensors, weights, smat, doubleEdgeFactorGraph):
 
 
 ########################################################################################################################
-#                                         Simple Update expectations and rdms                                          #
+#                                                                                                                      #
+#                                        SIMPLE UPDATE EXPECTATIONS & RDMs                                             #
+#                                                                                                                      #
 ########################################################################################################################
 
 
@@ -653,8 +662,8 @@ def PEPSdoubleSiteExpectationRectEnvironment(commonEdge, envSize, networkShape, 
     # absorb edges
     for t in tensors_indices:
         edge_leg = getEdges(t, smat)
-        TT[t] = absorbWeights_twoSiteExpectationWithRectangularEnvironment(TT[t], edge_leg, LL, inside, outside)
-        TTconj[t] = absorbWeights_twoSiteExpectationWithRectangularEnvironment(TTconj[t], edge_leg, LL, inside, outside)
+        TT[t] = absorbWeightsTwoSiteExpectationWithRectangularEnvironment(TT[t], edge_leg, LL, inside, outside)
+        TTconj[t] = absorbWeightsTwoSiteExpectationWithRectangularEnvironment(TTconj[t], edge_leg, LL, inside, outside)
 
     # lists and ncon
     t_list, i_list, o_list = nlg.ncon_list_generator_two_site_expectation_with_env_peps_obc(TT, TTconj, localOp, smat, emat, commonEdge, tensors_indices, inside, outside)
@@ -782,82 +791,83 @@ def PEPSexactEnergyPerSite(tensors, weights, smat, Jk, h, iOp, jOp, fieldOp):
     return energy
 
 
-def BP_energy_per_site_using_factor_belief(graph, smat, Jk, h, Opi, Opj, Op_field):
-
-    p = Opi[0].shape[0]
-    Aij = np.zeros((p ** 2, p ** 2), dtype=complex)
-    for i in range(len(Opi)):
-        Aij += np.kron(Opi[i], Opj[i])
+def BPenergyPerSite(defg, smat, Jk, h, iOp, jOp, fieldOp):
+    """
+    Calculating a TensorNet energy per site using the DEFG and its factor beliefs
+    :param defg: the TensorNet dual double-edge factor graph
+    :param smat: structure matrix
+    :param Jk: Hamiltonian's interaction constants J_{ij}
+    :param h: Hamiltonian's  field constant
+    :param iOp: Hamiltonian's i^th tensor operators
+    :param jOp: Hamiltonian's j^th tensor operators
+    :param fieldOp:  Hamiltonian's field operators
+    :return: energy per site
+    """
     energy = 0
+    d = iOp[0].shape[0]
+    Aij = np.zeros((d ** 2, d ** 2), dtype=complex)
+    for i in range(len(iOp)):
+        Aij += np.kron(iOp[i], jOp[i])
     n, m = np.shape(smat)
-    for Ek in range(m):
-        Oij = np.reshape(-Jk[Ek] * Aij - 0.25 * h * (np.kron(np.eye(p), Op_field) + np.kron(Op_field, np.eye(p))), (p, p, p, p))
-        tensors = np.nonzero(smat[:, Ek])[0]
-        fi_belief, fj_belief = graph.two_factors_belief('f' + str(tensors[0]), 'f' + str(tensors[1]))
-        fi_idx = range(len(fi_belief.shape))
-        fj_idx = range(len(fi_belief.shape), len(fi_belief.shape) + len(fj_belief.shape))
-        Oij_idx = [1000, 1001, 1002, 1003]
+    for commonEdge in range(m):
+        Oij = np.reshape(-Jk[commonEdge] * Aij - 0.25 * h * (np.kron(np.eye(d), fieldOp) + np.kron(fieldOp, np.eye(d))),
+                         (d, d, d, d))
+        tensors = np.nonzero(smat[:, commonEdge])[0]
+        fi_belief, fj_belief = defg.twoFactorsBelief('f' + str(tensors[0]), 'f' + str(tensors[1]))
+        fi_idx = list(range(len(fi_belief.shape)))
+        fj_idx = list(range(len(fi_belief.shape), len(fi_belief.shape) + len(fj_belief.shape)))
+        Oij_idx = [10000, 10001, 10002, 10003]  # Oij_{i, j, i', j'}
         fi_idx[0] = Oij_idx[0]
         fi_idx[1] = Oij_idx[2]
         fj_idx[0] = Oij_idx[1]
         fj_idx[1] = Oij_idx[3]
-        iedges, jedges = getTensorsEdges(Ek, smat)
-        '''
-        common_edges = []
-        for idx_edgei, edgei in enumerate(iedges[0]):
-            if edgei in jedges[0]:
-                idx_edgej = jedges[0].index(edgei)
-                fi_idx[2 * iedges[1][idx_edgei] + 1] = fj_idx[2 * jedges[1][idx_edgej] + 1]
-                fi_idx[2 * iedges[1][idx_edgei]] = fj_idx[2 * jedges[1][idx_edgej]]
-                common_edges.append(edgei)
-        for edge in common_edges:
-            idx_edgei = iedges[0].index(edge)
-            idx_edgej = jedges[0].index(edge)
-            iedges[0].remove(iedges[0][idx_edgei])
-            iedges[1].remove(iedges[1][idx_edgei])
-            jedges[0].remove(jedges[0][idx_edgej])
-            jedges[1].remove(jedges[1][idx_edgej])
-        '''
-        for leg_idx, leg in enumerate(iedges[1]):
+        iEdgeNidx, jEdgeNidx = getTensorsEdges(commonEdge, smat)
+        for leg_idx, leg in enumerate(iEdgeNidx[1]):
             fi_idx[2 * leg + 1] = fi_idx[2 * leg]
-        for leg_idx, leg in enumerate(jedges[1]):
+        for leg_idx, leg in enumerate(jEdgeNidx[1]):
             fj_idx[2 * leg + 1] = fj_idx[2 * leg]
-        Ek_legs = smat[np.nonzero(smat[:, Ek])[0], Ek]
-        fi_idx[2 * Ek_legs[0]] = fj_idx[2 * Ek_legs[1]]
-        fi_idx[2 * Ek_legs[0] + 1] = fj_idx[2 * Ek_legs[1] + 1]
-        E = ncon.ncon([fi_belief, fj_belief, Oij], [fi_idx, fj_idx, Oij_idx])
-        norm = ncon.ncon([fi_belief, fj_belief, np.eye(p ** 2).reshape((p, p, p, p))], [fi_idx, fj_idx, Oij_idx])
-        E_normalized = E / norm
-        energy += E_normalized
+        edge_legs = smat[np.nonzero(smat[:, commonEdge])[0], commonEdge]
+        fi_idx[2 * edge_legs[0]] = fj_idx[2 * edge_legs[1]]
+        fi_idx[2 * edge_legs[0] + 1] = fj_idx[2 * edge_legs[1] + 1]
+        siteEnergy = ncon.ncon([fi_belief, fj_belief, Oij], [fi_idx, fj_idx, Oij_idx])
+        norm = ncon.ncon([fi_belief, fj_belief, np.eye(d ** 2).reshape((d, d, d, d))], [fi_idx, fj_idx, Oij_idx])
+        siteNormelizedEnergy = siteEnergy / norm
+        energy += siteNormelizedEnergy
     energy /= n
     return energy
 
 
-def BP_two_site_rdm_using_factor_beliefs(Ek, graph, smat):
-
-    tensors = np.nonzero(smat[:, Ek])[0]
-    fi_belief, fj_belief = graph.two_factors_belief('f' + str(tensors[0]), 'f' + str(tensors[1]))
-    fi_idx = range(len(fi_belief.shape))
-    fj_idx = range(len(fi_belief.shape), len(fi_belief.shape) + len(fj_belief.shape))
-    fi_idx[0] = -1
-    fi_idx[1] = -3
-    fj_idx[0] = -2
-    fj_idx[1] = -4
-    iedges, jedges = getTensorsEdges(Ek, smat)
-
-    for leg_idx, leg in enumerate(iedges[1]):
+def BPdoubleSiteRDM(commonEdge, graph, smat):
+    """
+    Given two tensors common edge in a TensorNet and its dual DEFG this function returns the reduced density matrix
+    rho_{i * j, i' * j'} where i,j relate to the ket and i',j' relate to the bra.
+    :param commonEdge: the two tensors common edge
+    :param graph: the TensorNet dual DEFG
+    :param smat: structure matrix
+    :return: rdm as in rho_{i * j, i' * j'}
+    """
+    tensors = np.nonzero(smat[:, commonEdge])[0]
+    fi_belief, fj_belief = graph.twoFactorsBelief('f' + str(tensors[0]), 'f' + str(tensors[1]))
+    fi_idx = list(range(len(fi_belief.shape)))
+    fj_idx = list(range(len(fi_belief.shape), len(fi_belief.shape) + len(fj_belief.shape)))
+    fi_idx[0] = -1  # i
+    fi_idx[1] = -3  # i'
+    fj_idx[0] = -2  # j
+    fj_idx[1] = -4  # j'
+    iEdgeNidx, jEdgeNidx = getTensorsEdges(commonEdge, smat)
+    for leg_idx, leg in enumerate(iEdgeNidx[1]):
         fi_idx[2 * leg + 1] = fi_idx[2 * leg]
-    for leg_idx, leg in enumerate(jedges[1]):
+    for leg_idx, leg in enumerate(jEdgeNidx[1]):
         fj_idx[2 * leg + 1] = fj_idx[2 * leg]
-    Ek_legs = smat[np.nonzero(smat[:, Ek])[0], Ek]
-    fi_idx[2 * Ek_legs[0]] = fj_idx[2 * Ek_legs[1]]
-    fi_idx[2 * Ek_legs[0] + 1] = fj_idx[2 * Ek_legs[1] + 1]
-    rdm = ncon.ncon([fi_belief, fj_belief], [fi_idx, fj_idx])
-    rdm = rdm.reshape(rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3])
-    rdm /= np.trace(rdm)
+    commonEdgeIdx = smat[np.nonzero(smat[:, commonEdge])[0], commonEdge]
+    fi_idx[2 * commonEdgeIdx[0]] = fj_idx[2 * commonEdgeIdx[1]]
+    fi_idx[2 * commonEdgeIdx[0] + 1] = fj_idx[2 * commonEdgeIdx[1] + 1]
+    rdm = ncon.ncon([fi_belief, fj_belief], [fi_idx, fj_idx])  # rho_{i, j, i', j'}
+    rdm = rdm.reshape(rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3])  # rho_{i * j, i' * j'}
+    rdm /= np.trace(rdm)  # rho_{i * j, i' * j'}
     return rdm
 
-
+# fix
 def BP_energy_per_site_using_factor_belief_with_environment(graph, env_size, network_shape, smat, Jk, h, Opi, Opj, Op_field):
     energy = 0
     p = Opi[0].shape[0]
@@ -878,7 +888,7 @@ def BP_energy_per_site_using_factor_belief_with_environment(graph, env_size, net
     energy /= n
     return energy
 
-
+# if not in use, can be deleted (DEFG mean field approch to energy per site)
 def BP_energy_per_site_using_rdm_belief(graph, smat, Jk, h, Opi, Opj, Op_field):
     # calculating the normalized exact energy per site(tensor)
     if graph.rdm_belief == None:
@@ -940,204 +950,207 @@ def absorbAllTensorNetWeights(tensors, weights, smat):
     return tensors
 
 
-# ---------------------------------- BP truncation  ---------------------------------
+########################################################################################################################
+#                                                                                                                      #
+#                                  SIMPLE UPDATE with BELIEF PROPAGATION UPDATE (BPU)                                  #
+#                                                                                                                      #
+########################################################################################################################
 
 
-'''
-def BPupdate_all_edges(graph, TT, LL, smat, imat, Dmax):
-    ## this BP truncation is implemented on all edges
 
-    # run over all edges
-
-    for Ek in range(len(LL)):
-        the_node = 'n' + str(Ek)
-        Ti, Tj = get_tensors(Ek, TT, smat, imat)
-        i_dim, j_dim = get_all_edges(Ek, smat, imat)
-
-        fi = absorb_edges_for_graph(cp.deepcopy(Ti), i_dim, LL)
-        fj = absorb_edges_for_graph(cp.deepcopy(Tj), j_dim, LL)
-
-        A, B = AnB_calculation(graph, fi, fj, the_node)
+def AllEdgesBPU(defg, tensors, weights, smat, Dmax):
+    """
+    Preforms the Belief Propagation Update (BPU) algorithm using the Belief Propagation Truncation (BPT) on all
+    the TensorNet edges.
+    :param tensors: the TensorNet list of tensors
+    :param weights: the TensorNet list of weights
+    :param smat: structure matrix
+    :param Dmax: the maximal virtual bond dimension
+    :param defg: the TensorNet dual double-edge factor graph
+    :return: the updated tensors and weights lists
+    """
+    for edge in range(len(weights)):
+        node = 'n' + str(edge)
+        siteI, siteJ = getTensors(edge, tensors, smat)
+        edgeNidxI, edgeNidxJ = getAllTensorsEdges(edge, smat)
+        fi = absorbSqrtWeights(siteI[0], edgeNidxI, weights)
+        fj = absorbSqrtWeights(siteJ[0], edgeNidxJ, weights)
+        A, B = AnB_calculation(defg, fi, fj, node)
         P = find_P(A, B, Dmax)
-        TT, LL = smart_truncation(TT, LL, P, Ek, smat, imat, Dmax)
-        graph_update(Ek, TT, LL, smat, imat, graph)
-    return TT, LL
-'''
+        tensors, weights = BPtruncation(tensors, weights, P, edge, smat, Dmax)
+        updateDEFG(edge, tensors, weights, smat, defg)
+    return tensors, weights
 
-def BPupdate_single_edge(TT, LL, smat, Dmax, Ek, graph):
-    ## this BP truncation is implemented on a single edge Ek
 
-    # run BP on graph
-    #graph.sum_product(t_max, epsilon, dumping, 'init_with_old_messages')
-
-    the_node = 'n' + str(Ek)
-    Ti, Tj = getTensors(Ek, TT, smat)
-    i_dim, j_dim = getAllTensorsEdges(Ek, smat)
-
-    fi = absorbSqrtWeights(cp.deepcopy(Ti), i_dim, LL)
-    fj = absorbSqrtWeights(cp.deepcopy(Tj), j_dim, LL)
-
-    A, B = AnB_calculation(graph, fi, fj, the_node)
+def singleEdgeBPU(tensors, weights, smat, Dmax, edge, defg):
+    """
+    Preforms the Belief Propagation Update (BPU) algorithm using the Belief Propagation Truncation (BPT) on a
+    single TensorNet edge.
+    :param tensors: the TensorNet list of tensors
+    :param weights: the TensorNet list of weights
+    :param smat: structure matrix
+    :param Dmax: the edge maximal virtual bond dimension
+    :param edge: the specific edge
+    :param defg: the TensorNet dual double-edge factor graph
+    :return: the updated tensors and weights lists
+    """
+    node = 'n' + str(edge)
+    siteI, siteJ = getTensors(edge, tensors, smat)
+    edgeNidxI, edgeNidxJ = getAllTensorsEdges(edge, smat)
+    fi = absorbSqrtWeights(siteI[0], edgeNidxI, weights)
+    fj = absorbSqrtWeights(siteJ[0], edgeNidxJ, weights)
+    A, B = AnB_calculation(defg, fi, fj, node)
     P = find_P(A, B, Dmax)
-    TT, LL = smart_truncation(TT, LL, P, Ek, smat, Dmax)
-    updateDEFG(Ek, TT, LL, smat, graph)
+    tensors, weights = BPtruncation(tensors, weights, P, edge, smat, Dmax)
+    updateDEFG(edge, tensors, weights, smat, defg)
+    return tensors, weights
 
-    return TT, LL
 
-
-def PEPStoDEnFG_transform(graph, TT, LL, smat):
-    # generate the double edge factor graph from PEPS
-    factors_list = absorbAllTensorNetWeights(TT, LL, smat)
-
-    # Adding virtual nodes
+def TNtoDEFGtransform(defg, tensors, weights, smat):
+    """
+    Generate the double-edge factor graph from a TensorNet
+    :param defg: empty DEFG
+    :param tensors: the TensorNet list of tensors
+    :param weights: the TensorNet list of weights
+    :param smat: structure matrix
+    :return:
+    """
+    factorsList = absorbAllTensorNetWeights(tensors, weights, smat)
     n, m = np.shape(smat)
     for i in range(m):
-        graph.add_node(len(LL[i]), 'n' + str(graph.node_count))
-    # Adding factors
-    for i in range(n):
-        # generating the neighboring nodes of the i'th factor
-        neighbor_nodes = {}
+        defg.add_node(len(weights[i]), 'n' + str(defg.node_count))  # Adding virtual nodes
+    for i in range(n):  # Adding factors
+        neighbor_nodes = {}  # generating the neighboring nodes of the i'th factor
         edges = np.nonzero(smat[i, :])[0]
-        legs = smat[i, edges]
+        indices = smat[i, edges]
         for j in range(len(edges)):
-            neighbor_nodes['n' + str(edges[j])] = legs[j]
-        graph.add_factor(neighbor_nodes, np.array(factors_list[i], dtype=complex))
-    return graph
+            neighbor_nodes['n' + str(edges[j])] = indices[j]
+        defg.add_factor(neighbor_nodes, np.array(factorsList[i], dtype=complex))
+    return defg
 
 
-def find_P(A, B, D_max):
+def find_P(A, B, Dmax):
+    """
+    Finding the P matrix as in the BP truncation algorithm
+    :param A: the left message
+    :param B: the right message
+    :param Dmax: maximal virtual bond dimension
+    :return: the P matrix
+    """
     A_sqrt = linalg.sqrtm(A)
     B_sqrt = linalg.sqrtm(B)
 
-
-    ##  Calculate the environment matrix C and its SVD
+    #  Calculate the environment matrix C and its SVD
     C = np.matmul(B_sqrt, np.transpose(A_sqrt))
     u_env, s_env, vh_env = np.linalg.svd(C, full_matrices=False)
 
-    ##  Define P2
+    #  Define P2
     new_s_env = cp.copy(s_env)
-    new_s_env[D_max:] = 0
+    new_s_env[Dmax:] = 0
     P2 = np.zeros((len(s_env), len(s_env)))
     np.fill_diagonal(P2, new_s_env)
     P2 /= np.sum(new_s_env)
 
-    ##  Calculating P = A^(-1/2) * V * P2 * U^(dagger) * B^(-1/2)
-    P = np.matmul(np.transpose(np.linalg.inv(A_sqrt)), np.matmul(np.transpose(np.conj(vh_env)), np.matmul(P2, np.matmul(np.transpose(np.conj(u_env)), np.linalg.inv(B_sqrt)))))
+    #  Calculating P = A^(-1/2) * V * P2 * U^(dagger) * B^(-1/2)
+    P = np.matmul(np.transpose(np.linalg.inv(A_sqrt)),
+                  np.matmul(np.transpose(np.conj(vh_env)),
+                            np.matmul(P2, np.matmul(np.transpose(np.conj(u_env)), np.linalg.inv(B_sqrt)))))
     return P
 
 
-def find_P_entrywise(A, B, D_max):
-    A_sqrt = linalg.sqrtm(A)
-    B_sqrt = linalg.sqrtm(B)
-
-    ##  Calculate the environment matrix C and its SVD
-    C = B_sqrt * A_sqrt
-    u_env, s_env, vh_env = np.linalg.svd(C, full_matrices=False)
-
-    ##  Define P2
-    new_s_env = cp.copy(s_env)
-    new_s_env[D_max:] = 0
-    P2 = np.zeros((len(s_env), len(s_env)))
-    np.fill_diagonal(P2, new_s_env)
-    P2 /= np.sum(new_s_env)
-
-    ##  Calculating P = A^(-1/2) * V * P2 * U^(dagger) * B^(-1/2)
-    PP = np.matmul(np.matmul(np.transpose(np.conj(vh_env)), P2), np.transpose(np.conj(u_env)))
-    P = np.linalg.inv(A_sqrt) * PP * np.linalg.inv(B_sqrt)
-    return P
-
-
-def smart_truncation(TT1, LL1, P, edge, smat, D_max):
-    iedges, jedges = getTensorsEdges(edge, smat)
-    Ti, Tj = getTensors(edge, TT1, smat)
-    Ti = absorbWeights(Ti, iedges, LL1)
-    Tj = absorbWeights(Tj, jedges, LL1)
+def BPtruncation(tensors, weights, P, edge, smat, Dmax):
+    """
+    Preforming the Belief Propagation Truncation (BPT) step.
+    :param tensors: the TensorNet list of tensors
+    :param weights: the TensorNet list of weights
+    :param P: P matrix
+    :param edge: the edge we want to truncate
+    :param smat: structure matrix
+    :param Dmax: maximal virtual bond dimensio
+    :return: updated tensors and weights lists
+    """
+    edgeNidxI, edgeNidxJ = getTensorsEdges(edge, smat)
+    siteI, siteJ = getTensors(edge, tensors, smat)
+    siteI = absorbWeights(siteI, edgeNidxI, weights)
+    siteJ = absorbWeights(siteJ, edgeNidxJ, weights)
 
     # absorb the mutual edge
-    Ti[0] = np.einsum(Ti[0], range(len(Ti[0].shape)), np.sqrt(LL1[edge]), [Ti[2][0]], range(len(Ti[0].shape)))
-    Tj[0] = np.einsum(Tj[0], range(len(Tj[0].shape)), np.sqrt(LL1[edge]), [Tj[2][0]], range(len(Tj[0].shape)))
+    siteI[0] = np.einsum(siteI[0], range(len(siteI[0].shape)), np.sqrt(weights[edge]), [siteI[2][0]], range(len(siteI[0].shape)))
+    siteJ[0] = np.einsum(siteJ[0], range(len(siteJ[0].shape)), np.sqrt(weights[edge]), [siteJ[2][0]], range(len(siteJ[0].shape)))
 
     # reshaping
-    Ti = indexPermute(Ti)
-    Tj = indexPermute(Tj)
-    i_old_shape = cp.copy(list(Ti[0].shape))
-    j_old_shape = cp.copy(list(Tj[0].shape))
-    Ti[0] = rankNrank3(Ti[0])
-    Tj[0] = rankNrank3(Tj[0])
+    siteI = indexPermute(siteI)
+    siteJ = indexPermute(siteJ)
+    i_old_shape = cp.copy(list(siteI[0].shape))
+    j_old_shape = cp.copy(list(siteJ[0].shape))
+    siteI[0] = rankNrank3(siteI[0])
+    siteJ[0] = rankNrank3(siteJ[0])
 
-    # contracting P with Ti and Tj and then using SVD to generate Ti_tilde and Tj_tilde and lamda_tilde
-    Ti, Tj, lamda_edge = Accordion(Ti, Tj, P, D_max)
+    # contracting P with siteI and siteJ and then using SVD to generate siteI' and siteJ' and edgeWeight'
+    siteI, siteJ, edgeWeight = Accordion(siteI, siteJ, P, Dmax)
 
     # reshaping back
-    i_old_shape[1] = D_max
-    j_old_shape[1] = D_max
-    Ti[0] = rank3rankN(Ti[0], i_old_shape)
-    Tj[0] = rank3rankN(Tj[0], j_old_shape)
-    Ti = indexPermute(Ti)
-    Tj = indexPermute(Tj)
-    Ti = absorbInverseWeights(Ti, iedges, LL1)
-    Tj = absorbInverseWeights(Tj, jedges, LL1)
+    i_old_shape[1] = Dmax
+    j_old_shape[1] = Dmax
+    siteI[0] = rank3rankN(siteI[0], i_old_shape)
+    siteJ[0] = rank3rankN(siteJ[0], j_old_shape)
+    siteI = indexPermute(siteI)
+    siteJ = indexPermute(siteJ)
+    siteI = absorbInverseWeights(siteI, edgeNidxI, weights)
+    siteJ = absorbInverseWeights(siteJ, edgeNidxJ, weights)
 
-    # saving tensors and lamda
-    TT1[Ti[1][0]] = cp.deepcopy(Ti[0] / tensorNorm(Ti[0]))
-    TT1[Tj[1][0]] = cp.deepcopy(Tj[0] / tensorNorm(Tj[0]))
+    # saving new tensors and weights
+    tensors[siteI[1][0]] = siteI[0] / tensorNorm(siteI[0])
+    tensors[siteJ[1][0]] = siteJ[0] / tensorNorm(siteJ[0])
+    weights[edge] = edgeWeight / np.sum(edgeWeight)
+    return tensors, weights
 
-    LL1[edge] = lamda_edge / np.sum(lamda_edge)
-    return TT1, LL1
 
-'''
-def BPupdate_error(TT, LL, TT_old, LL_old, smat):
-    psipsi_T_list, psipsi_idx_list = nlg.ncon_list_generator_for_BPerror(cp.deepcopy(TT), cp.deepcopy(LL), cp.deepcopy(TT), cp.deepcopy(LL), smat)
-    psiphi_T_list, psiphi_idx_list = nlg.ncon_list_generator_for_BPerror(cp.deepcopy(TT), cp.deepcopy(LL), cp.deepcopy(TT_old), cp.deepcopy(LL_old), smat)
-    phiphi_T_list, phiphi_idx_list = nlg.ncon_list_generator_for_BPerror(cp.deepcopy(TT_old), cp.deepcopy(LL_old), cp.deepcopy(TT_old), cp.deepcopy(LL_old), smat)
-    phipsi_T_list, phipsi_idx_list = nlg.ncon_list_generator_for_BPerror(cp.deepcopy(TT_old), cp.deepcopy(LL_old), cp.deepcopy(TT), cp.deepcopy(LL), smat)
-
-    psipsi = ncon.ncon(psipsi_T_list, psipsi_idx_list)
-    psiphi = ncon.ncon(psiphi_T_list, psiphi_idx_list)
-    phipsi = ncon.ncon(phipsi_T_list, phipsi_idx_list)
-    phiphi = ncon.ncon(phiphi_T_list, phiphi_idx_list)
-
-    psi_norm = np.sqrt(psipsi)
-    phi_norm = np.sqrt(phiphi)
-    # print('overlap_exact = ', psiphi / psi_norm / phi_norm)
-    error = 2 - psiphi / psi_norm / phi_norm - phipsi / psi_norm / phi_norm
-    return error
-'''
-
-def Accordion(Ti, Tj, P, D_max):
+def Accordion(siteI, siteJ, P, Dmax):
+    """
+    Preformin the truncation step of the BPT
+    :param siteI: i tensor
+    :param siteJ: j tensor
+    :param P: truncation P matrix
+    :param Dmax: maximal virtual bond dimension
+    :return: siteI, siteJ, lamda_k
+    """
     # contracting two tensors i, j with P and SVD (with truncation) back
-    L = cp.deepcopy(Ti[0])
-    R = cp.deepcopy(Tj[0])
+    L = siteI[0]
+    R = siteJ[0]
 
+    # contract all tensors together \theta = \sum L P R
     A = np.einsum(L, [0, 1, 2], P, [1, 3], [0, 3, 2])  # (i, Ek, Q1)
     theta = np.einsum(A, [0, 1, 2], R, [3, 1, 4], [2, 0, 3, 4])  # (Q1, i, j, Q2)
 
-    R_tild, lamda_k, L_tild = truncationSVD(theta, [0, 1], [2, 3], keep_s='yes', max_eigen_num=D_max)
+    # SVD
+    R_tild, lamda_k, L_tild = truncationSVD(theta, [0, 1], [2, 3], keepS='yes', maxEigenvalNumber=Dmax)
 
     # reshaping R_tild and L_tild back
-    R_tild_new_shape = [Ti[0].shape[2], Ti[0].shape[0], R_tild.shape[1]]  # (d, i, D')
+    R_tild_new_shape = [siteI[0].shape[2], siteI[0].shape[0], R_tild.shape[1]]  # (d, d_i, Dmax)
     R_transpose = [1, 2, 0]
-    L_tild_new_shape = [L_tild.shape[0], Tj[0].shape[0], Tj[0].shape[2]]  # (D', j, d)
+    L_tild_new_shape = [L_tild.shape[0], siteJ[0].shape[0], siteJ[0].shape[2]]  # (Dmax, d_j, d)
     L_transpose = [1, 0, 2]
 
+    # reshaping
     R_tild = np.reshape(R_tild, R_tild_new_shape)
-    Ti[0] = np.transpose(R_tild, R_transpose)  # (i, D', ...)
+    siteI[0] = np.transpose(R_tild, R_transpose)  # (d_i, Dmax, ...)
     L_tild = np.reshape(L_tild, L_tild_new_shape)
-    Tj[0] = np.transpose(L_tild, L_transpose)  # (j, D', ...)
-
-    return Ti, Tj, lamda_k
-
-
-def AnB_calculation(graph, Ti, Tj, node_Ek):
-    A = graph.f2n_message_chnaged_factor('f' + str(Ti[1][0]), node_Ek, graph.messages_n2f, cp.deepcopy(Ti[0]))
-    B = graph.f2n_message_chnaged_factor('f' + str(Tj[1][0]), node_Ek, graph.messages_n2f, cp.deepcopy(Tj[0]))
-
-    #A = graph.f2n_message_chnaged_factor_without_matching_dof('f' + str(Ti[1][0]), node_Ek, graph.messages_n2f, cp.deepcopy(Ti[0]))
-    #B = graph.f2n_message_chnaged_factor_without_matching_dof('f' + str(Tj[1][0]), node_Ek, graph.messages_n2f, cp.deepcopy(Tj[0]))
-    #print('A, A1', np.sum(np.abs(A - A1)) / np.sum(A) / np.sum(A1))
-    #print('B, B1', np.sum(np.abs(B - B1)) / np.sum(B) / np.sum(B1))
+    siteJ[0] = np.transpose(L_tild, L_transpose)  # (d_j, Dmax, ...)
+    return siteI, siteJ, lamda_k
 
 
+def AnB_calculation(defg, siteI, siteJ, node_Ek):
+    """
+    Calculate the A, B messages for the BPT step.
+    :param defg: the double-edge factor graph
+    :param siteI: the TensorNet i^th tensor
+    :param siteJ: the TensorNet j^th tensor
+    :param node_Ek: the defg mutual node between factors I,J
+    :return: A, B messages
+    """
+    A = defg.f2n_message_chnaged_factor('f' + str(siteI[1][0]), node_Ek, defg.messages_n2f, cp.copy(siteI[0]))
+    B = defg.f2n_message_chnaged_factor('f' + str(siteJ[1][0]), node_Ek, defg.messages_n2f, cp.copy(siteJ[0]))
     return A, B
 
 

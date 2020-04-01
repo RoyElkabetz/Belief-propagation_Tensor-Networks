@@ -262,20 +262,31 @@ class Graph:
         return rdm
 
 
-    def two_factors_belief(self, f1, f2):
+    def twoFactorsBelief(self, f1, f2):
+        """
+        Given names of two factors returns the two factors with the n2f messages absorbed over all edges except the
+        common one.
+        :param f1: name of factor1, i.e. 'f1'
+        :param f2: name of factor2, i.e. 'f24'
+        :return: two double-edge factors, where the node 2 factor messages are absorbed over all edges except the common
+                 edge btween factor1 and factor2.
+        """
         ne1, ten1, idx1 = cp.deepcopy(self.factors[f1])
         ne2, ten2, idx2 = cp.deepcopy(self.factors[f2])
         del_n = []
         for n in ne1:
             if n in ne2:
                 del_n.append(n)
+
+        # delete common edge
         for n in del_n:
             del ne1[n]
             del ne2[n]
-
         messages = self.messages_n2f
         super_tensor1 = self.make_super_physical_tensor(ten1)
         super_tensor2 = self.make_super_physical_tensor(ten2)
+
+        # absorb node2factor messages
         for n in ne1.keys():
             super_tensor1 *= self.broadcasting(messages[n][f1], ne1[n], super_tensor1)
         for n in ne2.keys():

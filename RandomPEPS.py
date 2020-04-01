@@ -88,7 +88,7 @@ def RandomPEPS_BP(N, M, Jk, dE, D_max, t_max, epsilon, dumping, bc, t_list, iter
     # constructing the dual double-edge factor graph
 
     graph = defg.Graph()
-    graph = BP.PEPStoDEnFG_transform(graph, TT, LL, smat)
+    graph = BP.TNtoDEFGtransform(graph, TT, LL, smat)
     s = time.time()
     graph.sum_product(t_max, epsilon, dumping)
     tot = time.time() - s
