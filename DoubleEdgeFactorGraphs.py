@@ -2,6 +2,12 @@ import numpy as np
 import copy as cp
 import time
 
+########################################################################################################################
+#                                                                                                                      #
+#                                       DOUBLE-EDGE FACTOR GRAPH (DEFG) CLASS                                          #
+#                                                                                                                      #
+########################################################################################################################
+
 
 class defg:
 
@@ -38,6 +44,88 @@ class defg:
             self.nodes[n][1].add(fName)
         self.factors[fName] = [nodeNeighbors, tensor, self.fCounter]
         self.fCounter += 1
+
+########################################################################################################################
+#                                                                                                                      #
+#                                        DEFG BELIEF PROPAGATION ALGORITHM                                             #
+#                                                                                                                      #
+########################################################################################################################
+
+    def sumProduct(self, tmax, epsilon, dumping, initializeMessages=None, printTime=None):
+        factors = self.factors
+        nodes = self.nodes
+
+        # initialize all messages
+        if initializeMessages and self.messages_n2f and self.messages_f2n:
+            node2factor = self.messages_n2f
+            factor2node = self.messages_f2n
+        else:
+            node2factor = {}
+            factor2node = {}
+            for n in nodes.keys():
+                node2factor[n] = {}
+                alphabet = nodes[n][0]
+                for f in nodes[n][1]:
+                    node2factor[n][f] = self.messageInit(alphabet)
+            for f in factors.keys():
+                factor2node[f] = {}
+                for n in factors[f][0]:
+                    alphabet = nodes[n][0]
+                    factor2node[f][n] = self.messageInit(alphabet)
+
+        for t in range(tmax):
+            # save previous step messages
+            preMessages_f2n = cp.deepcopy(factor2node)
+            preMessages_n2f = cp.deepcopy(node2factor)
+
+            # calculating node to factor (n -> f) messages
+            for n in nodes.keys():
+                alphabet = nodes[n][0]
+                for f in nodes[n][1]:
+                    neighbors = cp.deepcopy(nodes[n][1])
+                    neighbors.remove(f)
+                    tempMessage = np.ones((alphabet, alphabet), dtype=complex)
+                    for item in neighbors:
+                        tempMessage *= preMessages_f2n[item][n]
+
+                    node2factor[n][f] = dumping * node2factor[n][f] + (1 - dumping) * tempMessage
+                    node2factor[n][f] /= np.trace(node2factor[n][f])
+
+            # calculating factor to node (f -> n) messages
+            for f in factors.keys():
+                for n in factors[f][0].keys():
+                    factor2node[f][n] = dumping * factor2node[f][n] + (1 - dumping) * self.f2n_message(f, n,
+                                                                                                       preMessages_n2f)
+                    factor2node[f][n] /= np.trace(factor2node[f][n])
+
+            # save this step new messages
+            self.messages_n2f = node2factor
+            self.messages_f2n = factor2node
+
+            # check if all messages converged
+            if self.checkBPconvergence(preMessages_n2f, preMessages_f2n, epsilon):
+                break
+        if printTime:
+            print("BP converged in %d iterations " % t)
+
+    def f2n_message(self, f, n, messages):
+        neighbors, tensor, index = cp.deepcopy(self.factors[f])
+        conjTensor = cp.copy(np.conj(tensor))
+        l = cp.copy(len(tensor.shape))
+        tensorIdx = list(range(l))
+        for item in neighbors:
+            if item == n:
+                continue
+            messageIdx = [self.factors[f][0][item], l + 1]
+            tensorFinalIdx = cp.copy(tensorIdx)
+            tensorFinalIdx[messageIdx[0]] = messageIdx[1]
+            tensor = np.einsum(tensor, tensorIdx, messages[item][f], messageIdx, tensorFinalIdx)
+        conjTensorIdx = cp.copy(tensorIdx)
+        conjTensorIdx[self.factors[f][0][n]] = l + 1
+        messageFinalIdx = [self.factors[f][0][n], l + 1]
+        message = np.einsum(tensor, tensorIdx, conjTensor, conjTensorIdx, messageFinalIdx)
+        message /= np.trace(message)
+        return message
 
     def messageBroadcasting(self, message, idx, tensor):
         idx = [2 * idx, 2 * idx + 1]
@@ -80,62 +168,6 @@ class defg:
         superTensor = np.einsum(tensor, tensorIdx, np.conj(tensor), conjtensorIdx, superTensorIdx)
         return superTensor
 
-    def sumProduct(self, tmax, epsilon, dumping, initializeMessages=None, printTime=None):
-        factors = self.factors
-        nodes = self.nodes
-        
-        # initialize all messages
-        if initializeMessages and self.messages_n2f and self.messages_f2n:
-            node2factor = self.messages_n2f
-            factor2node = self.messages_f2n
-        else:
-            node2factor = {}
-            factor2node = {}
-            for n in nodes.keys():
-                node2factor[n] = {}
-                alphabet = nodes[n][0]
-                for f in nodes[n][1]:
-                    node2factor[n][f] = self.messageInit(alphabet)
-            for f in factors.keys():
-                factor2node[f] = {}
-                for n in factors[f][0]:
-                    alphabet = nodes[n][0]
-                    factor2node[f][n] = self.messageInit(alphabet)
-
-        for t in range(tmax):
-            # save previous step messages
-            preMessages_f2n = cp.deepcopy(factor2node)
-            preMessages_n2f = cp.deepcopy(node2factor)
-            
-            # calculating node to factor (n -> f) messages
-            for n in nodes.keys():
-                alphabet = nodes[n][0]
-                for f in nodes[n][1]:
-                    neighbors = cp.deepcopy(nodes[n][1])
-                    neighbors.remove(f)
-                    tempMessage = np.ones((alphabet, alphabet), dtype=complex)
-                    for item in neighbors:
-                        tempMessage *= preMessages_f2n[item][n]
-                    
-                    node2factor[n][f] = dumping * node2factor[n][f] + (1 - dumping) * tempMessage
-                    node2factor[n][f] /= np.trace(node2factor[n][f])
-
-            # calculating factor to node (f -> n) messages
-            for f in factors.keys():
-                for n in factors[f][0].keys():
-                    factor2node[f][n] = dumping * factor2node[f][n] + (1 - dumping) * self.f2n_message(f, n, preMessages_n2f)
-                    factor2node[f][n] /= np.trace(factor2node[f][n])
-
-            # save this step new messages
-            self.messages_n2f = node2factor
-            self.messages_f2n = factor2node
-
-            # check if all messages converged
-            if self.checkBPconvergence(preMessages_n2f, preMessages_f2n, epsilon):
-                break
-        if printTime:
-            print("BP converged in %d iterations " % t)
-
     def checkBPconvergence(self, pre_n2f, pre_f2n, epsilon):
         convergenceCounter = 0
         messagesCounter = 0
@@ -155,6 +187,12 @@ class defg:
         else:
             return 0
 
+########################################################################################################################
+#                                                                                                                      #
+#                                             DEFG AUXILIARY FUNCTIONS                                                 #
+#                                                                                                                      #
+########################################################################################################################
+
     def calculateNodesBeliefs(self):
         self.nodesBeliefs = {}
         nodes = self.nodes
@@ -166,6 +204,18 @@ class defg:
             for f in nodes[n][1]:
                 tempMessage *= messages[f][n]
             self.nodesBeliefs[n] = tempMessage / np.trace(tempMessage)
+
+    def calculateFactorsBeliefs(self):
+        self.factorsBeliefs = {}
+        factors = self.factors
+        messages = self.messages_n2f
+        keys = factors.keys()
+        for f in keys:
+            superTensor = self.generateSuperPhysicalTensor(cp.deepcopy(factors[f][1]))
+            neighbors = factors[f][0]
+            for n in neighbors.keys():
+                superTensor *= self.messageBroadcasting(messages[n][f], neighbors[n], superTensor)
+            self.factorsBeliefs[f] = superTensor
 
     def calculateRDMS_dotProduct(self):
         self.rdms_dotProduct = []
@@ -202,26 +252,13 @@ class defg:
             self.rdms_broadcasting[factors[f][2]] = np.einsum(super_tensor, idx, [0, 1])
             self.rdms_broadcasting[factors[f][2]] /= np.trace(self.rdms_broadcasting[factors[f][2]])
 
-    def calculateFactorsBeliefs(self):
-        self.factorsBeliefs = {}
-        factors = self.factors
-        messages = self.messages_n2f
-        keys = factors.keys()
-        for f in keys:
-            superTensor = self.generateSuperPhysicalTensor(cp.deepcopy(factors[f][1]))
-            neighbors = factors[f][0]
-            for n in neighbors.keys():
-                superTensor *= self.messageBroadcasting(messages[n][f], neighbors[n], superTensor)
-            self.factorsBeliefs[f] = superTensor
-
-    def RDMSfromFactorBeliefs(self):
+    def calculateRDMSfromFactorBeliefs(self):
         rdms = {}
         for i in range(self.fCounter):
             rdms[i] = np.einsum(self.factorsBeliefs['f' + str(i)],
                                 list(range(len(self.factorsBeliefs['f' + str(i)].shape))), [0, 1])
             rdms[i] /= np.trace(rdms[i])
         return rdms
-
 
     def twoFactorsBelief(self, f1, f2):
         """
@@ -247,89 +284,22 @@ class defg:
         super_tensor1 = self.generateSuperPhysicalTensor(ten1)
         super_tensor2 = self.generateSuperPhysicalTensor(ten2)
 
-        # absorb node2factor messages
+        # absorb n -> f messages
         for n in ne1.keys():
             super_tensor1 *= self.messageBroadcasting(messages[n][f1], ne1[n], super_tensor1)
         for n in ne2.keys():
             super_tensor2 *= self.messageBroadcasting(messages[n][f2], ne2[n], super_tensor2)
         return super_tensor1, super_tensor2
 
+########################################################################################################################
+#                                                                                                                      #
+#                                          DEFG & BPU AUXILIARY FUNCTIONS                                              #
+#                                                                                                                      #
+########################################################################################################################
 
-    def absorb_message_into_factor_in_env(self, f, nodes_out):
-        # return a copy of f super physical tensor with absorbd message from node n
-        ne, ten, idx = cp.deepcopy(self.factors[f])
-        messages = self.messages_n2f
-        super_tensor = self.generateSuperPhysicalTensor(ten)
-        for n in ne:
-            if n in nodes_out:
-                super_tensor *= self.messageBroadcasting(messages[n][f], ne[n], super_tensor)
-        return super_tensor
-
-
-    def absorb_message_into_factor_in_env_efficient(self, f, nodes_out):
-        # return a copy of f  tensor with absorbed message from node n
-        ne, ten, idx = cp.deepcopy(self.factors[f])
-        messages = self.messages_n2f
-        for n in ne:
-            if n in nodes_out:
-                idx = range(len(ten.shape))
-                final_idx = range(len(ten.shape))
-                final_idx[ne[n]] = len(ten.shape)
-                ten = np.einsum(ten, idx, messages[n][f], [len(ten.shape), ne[n]], final_idx)
-        return ten
-
-
-    def f2n_message(self, f, n, messages):
+    def f2n_message_BPtruncation(self, f, n, messages, newFactor):
         neighbors, tensor, index = cp.deepcopy(self.factors[f])
-        conjTensor = cp.copy(np.conj(tensor))
-        l = cp.copy(len(tensor.shape))
-        tensorIdx = list(range(l))
-        for item in neighbors:
-            if item == n:
-                continue
-            messageIdx = [self.factors[f][0][item], l + 1]
-            tensorFinalIdx = cp.copy(tensorIdx)
-            tensorFinalIdx[messageIdx[0]] = messageIdx[1]
-            tensor = np.einsum(tensor, tensorIdx, messages[item][f], messageIdx, tensorFinalIdx)
-        conjTensorIdx = cp.copy(tensorIdx)
-        conjTensorIdx[self.factors[f][0][n]] = l + 1
-        messageFinalIdx = [self.factors[f][0][n], l + 1]
-        message = np.einsum(tensor, tensorIdx, conjTensor, conjTensorIdx, messageFinalIdx)
-        message /= np.trace(message)
-        return message
-
-
-    def f2n_message_without_matching_dof_and_broadcasting(self, f, n, messages):
-        neighbors, tensor, index = cp.deepcopy(self.factors[f])
-        super_tensor = self.generateSuperTensor(tensor)
-        for p in neighbors.keys():
-            if p == n:
-                continue
-            super_tensor *= self.messageVBroadcasting(messages[p][f], neighbors[p], super_tensor)
-        idx = range(len(super_tensor.shape))
-        final_idx = [2 * (neighbors[n] - 1), 2 * (neighbors[n] - 1) + 1]
-        message = np.einsum(super_tensor, idx, final_idx)
-        return message
-
-
-    def f2n_message_chnaged_factor_without_matching_dof(self, f, n, messages, new_factor):
-        neighbors, tensor, index = cp.deepcopy(self.factors[f])
-        super_tensor = self.generateSuperPhysicalTensor(new_factor)
-        for p in neighbors.keys():
-            if p == n:
-                continue
-            super_tensor *= self.messageBroadcasting(messages[p][f], neighbors[p], super_tensor)
-        idx = range(len(super_tensor.shape))
-        idx[0] = idx[1]
-        final_idx = [2 * neighbors[n], 2 * neighbors[n] + 1]
-        message = np.einsum(super_tensor, idx, final_idx)
-        return message
-
-
-
-    def f2n_message_chnaged_factor(self, f, n, messages, new_factor):
-        neighbors, tensor, index = cp.deepcopy(self.factors[f])
-        tensor = new_factor
+        tensor = newFactor
         conj_tensor = cp.copy(np.conj(tensor))
         l = cp.copy(len(tensor.shape))
         tensor_idx = list(range(l))
@@ -347,7 +317,37 @@ class defg:
         message /= np.trace(message)
         return message
 
+    # needs checking
+    def absorb_message_into_factor_in_env(self, f, nodes_out):
+        # return a copy of f super physical tensor with absorbed message from node n
+        ne, ten, idx = cp.deepcopy(self.factors[f])
+        messages = self.messages_n2f
+        super_tensor = self.generateSuperPhysicalTensor(ten)
+        for n in ne:
+            if n in nodes_out:
+                super_tensor *= self.messageBroadcasting(messages[n][f], ne[n], super_tensor)
+        return super_tensor
 
+    # needs checking
+    def absorb_message_into_factor_in_env_efficient(self, f, nodes_out):
+        # return a copy of f  tensor with absorbed message from node n
+        ne, ten, idx = cp.deepcopy(self.factors[f])
+        messages = self.messages_n2f
+        for n in ne:
+            if n in nodes_out:
+                idx = list(range(len(ten.shape)))
+                final_idx = list(range(len(ten.shape)))
+                final_idx[ne[n]] = len(ten.shape)
+                ten = np.einsum(ten, idx, messages[n][f], [len(ten.shape), ne[n]], final_idx)
+        return ten
+
+########################################################################################################################
+#                                                                                                                      #
+#                                              DEFG EXACT CALCULATIONS                                                 #
+#                                                                                                                      #
+########################################################################################################################
+
+    # needs checking
     def exact_joint_probability(self):
         factors = cp.deepcopy(self.factors)
         p_dim = []
@@ -375,52 +375,14 @@ class defg:
             p *= self.tensorBroadcasting(f, broadcasting_idx, p)
         return p, p_dic, p_order
 
+    # needs checking
     def exact_nodes_marginal(self, p, p_dic, p_order, nodes_list):
         marginal = cp.deepcopy(p)
         final_idx = [0] * len(nodes_list)
         for i in range(len(nodes_list)):
             final_idx[i] = p_dic[nodes_list[i]]
-        marginal = np.einsum(marginal, range(len(marginal.shape)), final_idx)
+        marginal = np.einsum(marginal, list(range(len(marginal.shape))), final_idx)
         return marginal
-
-
-    def special_factor_belief(self, f, legs):
-        neighbors, factor, idx = self.factors[f]
-
-
-        messages = self.messages_n2f
-
-        super_tensor = self.generateSuperPhysicalTensor(cp.deepcopy(factor))
-        super_tensor_idx = range(len(super_tensor.shape))
-        final_idx = cp.copy(super_tensor_idx)
-        for n in neighbors.keys():
-            if neighbors[n] in legs:
-                continue
-            message = messages[n][f]
-            message_idx = [2 * neighbors[n], 2 * neighbors[n] + 1]
-            for i in message_idx:
-                final_idx.remove(i)
-
-
-    def new_factor_belief(self):
-        self.factorsBeliefs = {}
-        messages = self.messages_n2f
-        keys = self.factors.keys()
-        for f in keys:
-            neighbors, tensor, index = cp.deepcopy(self.factors[f])
-            conj_tensor = cp.copy(np.conj(tensor))
-            l = cp.copy(len(tensor.shape))
-            tensor_idx = list(range(l))
-            for item in neighbors:
-                message_idx = [self.factors[f][0][item], l + 1]
-                final_idx = cp.copy(tensor_idx)
-                final_idx[message_idx[0]] = message_idx[1]
-                tensor = np.einsum(tensor, tensor_idx, messages[item][f], message_idx, final_idx)
-            conj_tensor_idx = cp.copy(tensor_idx)
-            conj_tensor_idx[self.factors[f][0][n]] = l + 1
-            message_final_idx = [self.factors[f][0][n], l + 1]
-            message = np.einsum(tensor, tensor_idx, conj_tensor, conj_tensor_idx, message_final_idx)
-            message /= np.trace(message)
 
 
 

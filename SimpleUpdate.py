@@ -1149,8 +1149,8 @@ def AnB_calculation(defg, siteI, siteJ, node_Ek):
     :param node_Ek: the defg mutual node between factors I,J
     :return: A, B messages
     """
-    A = defg.f2n_message_chnaged_factor('f' + str(siteI[1][0]), node_Ek, defg.messages_n2f, cp.copy(siteI[0]))
-    B = defg.f2n_message_chnaged_factor('f' + str(siteJ[1][0]), node_Ek, defg.messages_n2f, cp.copy(siteJ[0]))
+    A = defg.f2n_message_BPtruncation('f' + str(siteI[1][0]), node_Ek, defg.messages_n2f, cp.copy(siteI[0]))
+    B = defg.f2n_message_BPtruncation('f' + str(siteJ[1][0]), node_Ek, defg.messages_n2f, cp.copy(siteJ[0]))
     return A, B
 
 
