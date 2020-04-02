@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/SimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleUpdate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BPupdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/BPupdate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BPupdate_MPS.py" beforeDir="false" afterPath="$PROJECT_DIR$/BPupdate_MPS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BPupdate_MPS_openBC.py" beforeDir="false" afterPath="$PROJECT_DIR$/BPupdate_MPS_openBC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BPupdate_MPS_openBC_smart_trancation.py" beforeDir="false" afterPath="$PROJECT_DIR$/BPupdate_MPS_openBC_smart_trancation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Heisenberg_model_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/Heisenberg_model_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomPEPS.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomPEPS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomPEPS_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomPEPS_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/double_edge_experiments.py" beforeDir="false" afterPath="$PROJECT_DIR$/double_edge_experiments.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +46,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="79">
@@ -146,11 +154,55 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="279" selection-start-line="279" selection-end-line="279" />
+            <state relative-caret-position="195">
+              <caret line="220" column="38" selection-start-line="220" selection-start-column="38" selection-end-line="220" selection-end-column="38" />
+              <folding>
+                <element signature="e#209#681#0" />
+                <element signature="e#736#911#0" />
+                <element signature="e#971#1488#0" />
+                <element signature="e#1067#1375#0" />
+                <element signature="e#1548#1722#0" />
+                <element signature="e#1790#1976#0" />
+                <element signature="e#2049#2191#0" />
+                <element signature="e#2238#2593#0" />
+                <element signature="e#2223#2666#0" />
+                <element signature="e#2729#3129#0" />
+                <element signature="e#3222#5522#0" />
+                <element signature="e#5879#6487#0" />
+                <element signature="e#7221#7585#0" />
+                <element signature="e#7638#8603#0" />
+                <element signature="e#7740#8371#0" />
+                <element signature="e#8441#8898#0" />
+                <element signature="e#10671#11379#0" />
+                <element signature="e#10662#11068#1" />
+                <element signature="e#10821#10865#0" />
+                <element signature="e#10902#10935#0" />
+                <element signature="e#11447#11838#0" />
+                <element signature="e#11705#11810#0" />
+                <element signature="e#11922#12382#0" />
+                <element signature="e#12107#12363#0" />
+                <element signature="e#12142#12363#0" />
+                <element signature="e#12447#13265#0" />
+                <element signature="e#13357#13846#0" />
+                <element signature="e#13514#13647#0" />
+                <element signature="e#13948#14454#0" />
+                <element signature="e#14118#14243#0" />
+                <element signature="e#14536#15393#0" />
+                <element signature="e#14785#15076#0" />
+                <element signature="e#15443#16642#0" />
+                <element signature="e#15611#15955#0" />
+                <element signature="e#16046#16609#0" />
+                <element signature="e#16201#16364#0" />
+                <element signature="e#16719#16977#0" />
+                <element signature="e#17034#17565#0" />
+                <element signature="e#17342#17565#0" />
+                <element signature="e#17609#18547#0" />
+                <element signature="e#17740#18547#0" />
+                <element signature="e#17981#18233#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -166,8 +218,8 @@
         <option value="$PROJECT_DIR$/StructureMatrixGenerator.py" />
         <option value="$PROJECT_DIR$/Heisenberg_model_main.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" />
         <option value="$PROJECT_DIR$/SimpleUpdate.py" />
+        <option value="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" />
       </list>
     </option>
   </component>
@@ -290,12 +342,12 @@
       <updated>1585223971321</updated>
       <workItem from="1585223974487" duration="1000000" />
       <workItem from="1585333546071" duration="1473000" />
-      <workItem from="1585337855853" duration="21479000" />
+      <workItem from="1585337855853" duration="27273000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23952000" />
+    <option name="totallyTimeSpent" value="29746000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="791" extended-state="6" />
@@ -305,7 +357,7 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32904148" />
+      <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.32904148" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32904148" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39914164" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -395,13 +447,6 @@
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="279" selection-start-line="279" selection-end-line="279" />
         </state>
       </provider>
     </entry>
@@ -507,6 +552,57 @@
             <element signature="e#47684#49193#0" />
             <element signature="e#49700#50713#0" />
             <element signature="e#50985#51229#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="220" column="38" selection-start-line="220" selection-start-column="38" selection-end-line="220" selection-end-column="38" />
+          <folding>
+            <element signature="e#209#681#0" />
+            <element signature="e#736#911#0" />
+            <element signature="e#971#1488#0" />
+            <element signature="e#1067#1375#0" />
+            <element signature="e#1548#1722#0" />
+            <element signature="e#1790#1976#0" />
+            <element signature="e#2049#2191#0" />
+            <element signature="e#2238#2593#0" />
+            <element signature="e#2223#2666#0" />
+            <element signature="e#2729#3129#0" />
+            <element signature="e#3222#5522#0" />
+            <element signature="e#5879#6487#0" />
+            <element signature="e#7221#7585#0" />
+            <element signature="e#7638#8603#0" />
+            <element signature="e#7740#8371#0" />
+            <element signature="e#8441#8898#0" />
+            <element signature="e#10671#11379#0" />
+            <element signature="e#10662#11068#1" />
+            <element signature="e#10821#10865#0" />
+            <element signature="e#10902#10935#0" />
+            <element signature="e#11447#11838#0" />
+            <element signature="e#11705#11810#0" />
+            <element signature="e#11922#12382#0" />
+            <element signature="e#12107#12363#0" />
+            <element signature="e#12142#12363#0" />
+            <element signature="e#12447#13265#0" />
+            <element signature="e#13357#13846#0" />
+            <element signature="e#13514#13647#0" />
+            <element signature="e#13948#14454#0" />
+            <element signature="e#14118#14243#0" />
+            <element signature="e#14536#15393#0" />
+            <element signature="e#14785#15076#0" />
+            <element signature="e#15443#16642#0" />
+            <element signature="e#15611#15955#0" />
+            <element signature="e#16046#16609#0" />
+            <element signature="e#16201#16364#0" />
+            <element signature="e#16719#16977#0" />
+            <element signature="e#17034#17565#0" />
+            <element signature="e#17342#17565#0" />
+            <element signature="e#17609#18547#0" />
+            <element signature="e#17740#18547#0" />
+            <element signature="e#17981#18233#0" />
           </folding>
         </state>
       </provider>

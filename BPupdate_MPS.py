@@ -475,10 +475,10 @@ def BPupdate(TT, LL, smat, imat, t_max, epsilon, dumping, Dmax):
     TT = cp.deepcopy(TT)
     LL = cp.deepcopy(LL)
 
-    graph = defg.Graph()
+    graph = defg.defg()
     graph = MPStoDEnFG_transform(graph, TT, LL, smat)
-    graph.sum_product(t_max, epsilon, dumping)
-    graph.calc_node_belief()
+    graph.sumProduct(t_max, epsilon, dumping)
+    graph.calculateNodesBeliefs()
     for Ek in range(len(LL)):
         P = find_P(graph, Ek, smat, Dmax)
         TT, LL = smart_truncation(TT, LL, P, Ek, smat, imat, Dmax)
@@ -493,9 +493,9 @@ def BPupdate_single_edge(TT1, LL1, smat, imat, t_max, epsilon, dumping, Dmax, Ek
     TT = cp.deepcopy(TT1)
     LL = cp.deepcopy(LL1)
 
-    graph = defg.Graph()
+    graph = defg.defg()
     graph = MPStoDEnFG_transform(graph, TT, LL, smat)
-    graph.sum_product(t_max, epsilon, dumping)
+    graph.sumProduct(t_max, epsilon, dumping)
     P = find_P(graph, Ek, smat, Dmax)
     TT, LL = smart_truncation(TT, LL, P, Ek, smat, imat, Dmax)
     # BPerror = BPupdate_error(TT, LL, TT_old, LL_old, smat)

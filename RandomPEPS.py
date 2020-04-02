@@ -87,12 +87,12 @@ def RandomPEPS_BP(N, M, Jk, dE, D_max, t_max, epsilon, dumping, bc, t_list, iter
 
     # constructing the dual double-edge factor graph
 
-    graph = defg.Graph()
+    graph = defg.defg()
     graph = BP.TNtoDEFGtransform(graph, TT, LL, smat)
     s = time.time()
-    graph.sum_product(t_max, epsilon, dumping)
+    graph.sumProduct(t_max, epsilon, dumping)
     tot = time.time() - s
-    graph.calc_factor_belief()
+    graph.calculateFactorsBeliefs()
 
 
     # iterating the BP truncation algorithm

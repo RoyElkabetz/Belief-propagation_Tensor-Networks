@@ -448,7 +448,7 @@ def BPupdate(TT, LL, smat, imat, t_max, epsilon, dumping, Dmax):
 
     graph = denfg.Graph()
     graph = PEPStoDEnFG_transform(graph, TT, LL, smat)
-    graph.sum_product(t_max, epsilon, dumping)
+    graph.sumProduct(t_max, epsilon, dumping)
     for Ek in range(len(LL)):
         P = find_P(graph, Ek, smat, Dmax)
         TT, LL = smart_truncation(TT, LL, P, Ek, smat, imat, Dmax)
@@ -465,7 +465,7 @@ def BPupdate_single_edge(TT, LL, smat, imat, t_max, epsilon, dumping, Dmax, Ek):
 
     graph = denfg.Graph()
     graph = PEPStoDEnFG_transform(graph, TT, LL, smat)
-    graph.sum_product(t_max, epsilon, dumping)
+    graph.sumProduct(t_max, epsilon, dumping)
     P = find_P(graph, Ek, smat, Dmax)
     TT, LL = smart_truncation(TT, LL, P, Ek, smat, imat, Dmax)
     #BPerror = BPupdate_error(TT, LL, TT_old, LL_old, smat)

@@ -330,7 +330,7 @@ z = np.array([[1, 0], [0, -1]])
 x = np.array([[0, 1], [1, 0]])
 
 # generate the graph
-g = fg.Graph()
+g = fg.defg()
 
 # add nodes
 for i in range(n):
@@ -350,7 +350,7 @@ for i in range(n - 1):
 # g.add_factor({'n0': 0, 'n3': 1}, np.random.rand(d, d) + 1j * np.random.rand(d, d))
 # g.add_factor({'n0': 0, 'n2': 1}, np.random.rand(d, d) + 1j * np.random.rand(d, d))
 # g.add_factor({'n3': 0, 'n5': 1}, np.random.rand(d, d) + 1j * np.random.rand(d, d))
-N = g.node_count
+N = g.nCounter
 # saving data
 node_marginals = np.zeros((alphabet, N, t_max), dtype=complex)
 exact_node_marginals = np.zeros((alphabet, N, t_max), dtype=complex)
@@ -365,23 +365,23 @@ p, p_dic, p_order = g.exact_joint_probability()
 
 # run BP
 for t in range(1, t_max):
-    g.sum_product(t, epsilon, dumping)
-    g.calc_node_belief()
+    g.sumProduct(t, epsilon, dumping)
+    g.calculateNodesBeliefs()
 
     for i in range(N):
         node = 'n' + str(i)
-        node_marginals[:, i, t] = np.linalg.eigvals(g.node_belief[node])
+        node_marginals[:, i, t] = np.linalg.eigvals(g.nodesBeliefs[node])
         exact_node_marginals[:, i, t] = np.linalg.eigvals(
             g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*']) / np.trace(
                 g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*'])))
-        z_measure[i, t] = np.trace(np.matmul(g.node_belief[node], z))
+        z_measure[i, t] = np.trace(np.matmul(g.nodesBeliefs[node], z))
         z_exact[i, t] = np.trace(np.matmul(g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*']) / np.trace(
             g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*'])), z))
-        x_measure[i, t] = np.trace(np.matmul(g.node_belief[node], x))
+        x_measure[i, t] = np.trace(np.matmul(g.nodesBeliefs[node], x))
         x_exact[i, t] = np.trace(np.matmul(g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*']) / np.trace(
             g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*'])), x))
         marginal_error[i, t] = np.sum(np.abs(
-            g.node_belief['n' + str(i)] - g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*']) / np.trace(
+            g.nodesBeliefs['n' + str(i)] - g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*']) / np.trace(
                 g.exact_nodes_marginal(p, p_dic, p_order, [node, node + '*']))))
 
 # print(np.linalg.eigvals(fac1))
