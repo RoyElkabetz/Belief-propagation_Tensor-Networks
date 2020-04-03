@@ -13,7 +13,7 @@ D = 2
 # initialize
 structureMat, incidenceMat = smg.finitePEPSobcStructureMatrixGenerator(N, N)
 tensors, lambdas = smg.randomTensornetGenerator(structureMat, d, D)
-N, M = structureMat.shape
+n, m = structureMat.shape
 
 
 # imaginary time evolution parameters
@@ -27,7 +27,7 @@ Opi = [Sx, Sy, Sz]
 Opj = [Sx, Sy, Sz]
 Op_field = np.eye(d)
 timeStep = 0.1
-interactionConstants = [-1] * M
+interactionConstants = [-1] * m
 dE = 1e-5
 flag = 1
 counter = 0
@@ -57,6 +57,12 @@ while flag:
             flag = 0
     counter += 1
 
+magnetization = np.zeros((N, N), dtype=float)
+arr = np.array(range(N * N))
+coords = np.unravel_index(arr, (N, N))
+for i, tensor in enumerate(tensorsNew):
+    magnetization[coords[0][i], coords[1][i]] = su.singleSiteExpectation(i, tensorsNew, lambdasNew, structureMat, Sz)
+
 plt.figure()
 plt.plot(range(counter), energyPerSite, 'o')
 plt.show()
@@ -65,3 +71,7 @@ plt.figure()
 plt.plot(range(counter), magZ0, 'o')
 plt.show()
 
+plt.figure()
+plt.matshow(magnetization)
+plt.colorbar()
+plt.show()
