@@ -190,8 +190,8 @@ def RandomPEPS_SU(N, M, Jk, dE, D_max, bc, t_list, iterations):
     for dt in t_list:
         for j in range(iterations):
             print('N, D max, dt, j = ', N * M, D_max, dt, j)
-            TT1, LL1 = BP.simpleUpdate(TT, LL, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'gPEPS')
-            TT2, LL2 = BP.simpleUpdate(TT1, LL1, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'gPEPS')
+            TT1, LL1 = BP.simpleUpdate(TT, LL, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'SU')
+            TT2, LL2 = BP.simpleUpdate(TT1, LL1, dt, Jk, h, Opi, Opj, Op_field, smat, D_max, 'SU')
             error = 0
             for i in range(len(LL1)):
                 error += np.sum(np.abs(LL1[i] - LL2[i]))

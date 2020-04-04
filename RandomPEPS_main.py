@@ -12,7 +12,6 @@ import pandas as pd
 
 
 import SimpleUpdate as BP
-import BPupdate_PEPS_smart_trancation2 as gPEPS
 import ncon_lists_generator as nlg
 import DoubleEdgeFactorGraphs as defg
 import StructureMatrixGenerator as tnf
@@ -86,7 +85,7 @@ def randomPEPSmainFunction():
     if flag_save_variables:
 
         parameters = [['N, M', [N, M]], ['dE', dE], ['t_max', t_max], ['dumping', dumping], ['epsilon', epsilon], ['D_max', D_max]]
-        file_name = "2019_02_23_1_100_OBC_Random_PEPS"
+        file_name = "2020_04_03_1_16_OBC_Random_PEPS"
         pickle.dump(parameters, open(file_name + '_parameters.p', "wb"))
         pickle.dump(BP_data, open(file_name + '_BP.p', "wb"))
         pickle.dump(SU_data, open(file_name + '_gPEPS.p', "wb"))
@@ -98,9 +97,9 @@ def randomPEPSmainFunction():
     #
     if flag_load_data:
 
-        file_name_bp = "2019_02_23_1_100_OBC_Random_PEPS_BP.p"
-        file_name_gpeps = "2019_02_23_1_100_OBC_Random_PEPS_gPEPS.p"
-        file_name1 = "2019_02_23_1_100_OBC_Random_PEPS_parameters.p"
+        file_name_bp = "2020_04_03_1_16_OBC_Random_PEPS_BP.p"
+        file_name_gpeps = "2020_04_03_1_16_OBC_Random_PEPS_gPEPS.p"
+        file_name1 = "2020_04_03_1_16_OBC_Random_PEPS_parameters.p"
 
         data_bp = pickle.load(open(file_name_bp, "rb"))
         data_su = pickle.load(open(file_name_gpeps, "rb"))

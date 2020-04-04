@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main_tSU_BP.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomPEPS.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomPEPS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomPEPS_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomPEPS_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleUpdate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,11 +32,56 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="74" column="9" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="9" />
+            <state relative-caret-position="164">
+              <caret line="66" column="33" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/RandomPEPS_main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/RandomPEPS.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1410">
+              <caret line="94" selection-start-line="94" selection-end-line="94" />
+              <folding>
+                <element signature="e#1#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/temp.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="821">
+              <caret line="403" column="36" lean-forward="true" selection-start-line="403" selection-start-column="36" selection-end-line="403" selection-end-column="36" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main_tSU_BP.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-211">
+              <caret line="28" column="18" lean-forward="true" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -41,8 +92,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="479" column="63" selection-start-line="479" selection-start-column="63" selection-end-line="479" selection-end-column="63" />
+            <state relative-caret-position="210">
+              <caret line="14" lean-forward="true" selection-start-line="9" selection-end-line="14" />
               <folding>
                 <element signature="e#1#19#0" expanded="true" />
                 <element signature="e#499#5967#0" />
@@ -131,7 +182,6 @@
                 <element signature="e#40553#40651#0" />
                 <element signature="e#43835#44381#0" />
                 <element signature="e#44497#45461#0" />
-                <element signature="e#45914#46677#0" />
                 <element signature="e#46705#47410#0" />
                 <element signature="e#47684#49193#0" />
                 <element signature="e#49700#50713#0" />
@@ -144,14 +194,15 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="388" lean-forward="true" selection-start-line="388" selection-end-line="388" />
+            <state relative-caret-position="132">
+              <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#50#170#0" />
                 <element signature="e#209#681#0" />
-                <element signature="e#736#911#0" />
-                <element signature="e#971#1488#0" />
+                <element signature="e#1258#1432#0" />
+                <element signature="e#1704#2191#0" />
                 <element signature="e#1067#1375#0" />
+                <element signature="e#1987#2107#0" />
                 <element signature="e#2070#4333#0" />
                 <element signature="e#2242#2317#0" />
                 <element signature="e#2344#2827#0" />
@@ -172,12 +223,13 @@
                 <element signature="e#2223#2666#0" />
                 <element signature="e#2849#2952#0" />
                 <element signature="e#2729#3129#0" />
-                <element signature="e#3389#3492#0" />
+                <element signature="e#7456#7597#0" />
                 <element signature="e#5879#6487#0" />
                 <element signature="e#6021#6187#0" />
                 <element signature="e#6058#6187#0" />
                 <element signature="e#6226#6392#0" />
                 <element signature="e#6263#6392#0" />
+                <element signature="e#7539#7659#0" />
                 <element signature="e#7221#7585#0" />
                 <element signature="e#7370#7585#0" />
                 <element signature="e#9497#9954#0" />
@@ -193,6 +245,7 @@
                 <element signature="e#10662#11068#1" />
                 <element signature="e#10821#10865#0" />
                 <element signature="e#10902#10935#0" />
+                <element signature="e#13258#13378#0" />
                 <element signature="e#11439#12295#0" />
                 <element signature="e#11687#11978#0" />
                 <element signature="e#11447#11838#0" />
@@ -200,7 +253,11 @@
                 <element signature="e#11922#12382#0" />
                 <element signature="e#12107#12363#0" />
                 <element signature="e#12142#12363#0" />
+                <element signature="e#15859#15979#0" />
                 <element signature="e#15443#16642#0" />
+                <element signature="e#15611#15955#0" />
+                <element signature="e#16046#16609#0" />
+                <element signature="e#16201#16364#0" />
                 <element signature="e#16719#16977#0" />
               </folding>
             </state>
@@ -208,6 +265,13 @@
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -217,19 +281,13 @@
       <list>
         <option value="$PROJECT_DIR$/StructureMatrixGenerator.py" />
         <option value="$PROJECT_DIR$/Heisenberg_model_main.py" />
-        <option value="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" />
-        <option value="$PROJECT_DIR$/SimpleUpdate.py" />
         <option value="$PROJECT_DIR$/main.py" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectConfigurationFiles">
-    <option name="files">
-      <list>
-        <option value="$PROJECT_DIR$/.idea/QBPmodule.iml" />
-        <option value="$PROJECT_DIR$/.idea/misc.xml" />
-        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
-        <option value="$PROJECT_DIR$/.idea/modules.xml" />
+        <option value="$PROJECT_DIR$/RandomPEPS.py" />
+        <option value="$PROJECT_DIR$/SimpleUpdate.py" />
+        <option value="$PROJECT_DIR$/RandomPEPS_main.py" />
+        <option value="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" />
+        <option value="$PROJECT_DIR$/main_tSU_BP.py" />
+        <option value="$PROJECT_DIR$/temp.py" />
       </list>
     </option>
   </component>
@@ -237,6 +295,9 @@
     <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="376" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -277,7 +338,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.temp">
     <configuration name="SimpleUpdate" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -319,12 +380,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="temp" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="QBPmodule" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.SimpleUpdate" />
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.temp" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.temp" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.SimpleUpdate" />
       </list>
@@ -342,18 +424,18 @@
       <updated>1585223971321</updated>
       <workItem from="1585223974487" duration="1000000" />
       <workItem from="1585333546071" duration="1473000" />
-      <workItem from="1585337855853" duration="31068000" />
+      <workItem from="1585337855853" duration="35908000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33541000" />
+    <option name="totallyTimeSpent" value="38381000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="791" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.25679544" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25679544" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -368,11 +450,11 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" weight="0.32904148" />
       <window_info anchor="bottom" id="Terminal" order="11" />
-      <window_info anchor="bottom" id="Python Console" order="12" visible="true" weight="0.32904148" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="12" visible="true" weight="0.32904148" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info active="true" anchor="right" id="SciView" order="3" visible="true" weight="0.3297568" />
+      <window_info anchor="right" id="SciView" order="3" weight="0.3297568" />
       <window_info anchor="right" id="Database" order="4" weight="0.3297568" />
     </layout>
   </component>
@@ -392,21 +474,20 @@
           <line>62</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/temp.py</url>
+          <line>376</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QBPmodule$SimpleUpdate.coverage" NAME="SimpleUpdate Coverage Results" MODIFIED="1585333607852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QBPmodule$temp.coverage" NAME="temp Coverage Results" MODIFIED="1586029634223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QBPmodule$main.coverage" NAME="main Coverage Results" MODIFIED="1585912789088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///anaconda3/lib/python3.7/site-packages/numpy/core/einsumfunc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="1355" selection-start-line="1355" selection-end-line="1355" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ncon.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="287">
@@ -445,16 +526,55 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
+    <entry file="file:///anaconda3/lib/python3.7/site-packages/numpy/core/overrides.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="388" lean-forward="true" selection-start-line="388" selection-end-line="388" />
+        <state relative-caret-position="130">
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///anaconda3/lib/python3.7/site-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1535">
+          <caret line="2159" column="4" selection-start-line="2159" selection-start-column="4" selection-end-line="2159" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///anaconda3/lib/python3.7/site-packages/numpy/core/einsumfunc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="1355" selection-start-line="1355" selection-end-line="1355" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="66" column="33" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///anaconda3/lib/python3.7/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="309" selection-start-line="309" selection-end-line="309" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
+          <folding>
+            <element signature="e#50#170#0" />
             <element signature="e#209#681#0" />
-            <element signature="e#736#911#0" />
-            <element signature="e#971#1488#0" />
+            <element signature="e#1258#1432#0" />
+            <element signature="e#1704#2191#0" />
             <element signature="e#1067#1375#0" />
+            <element signature="e#1987#2107#0" />
             <element signature="e#2070#4333#0" />
             <element signature="e#2242#2317#0" />
             <element signature="e#2344#2827#0" />
@@ -475,12 +595,13 @@
             <element signature="e#2223#2666#0" />
             <element signature="e#2849#2952#0" />
             <element signature="e#2729#3129#0" />
-            <element signature="e#3389#3492#0" />
+            <element signature="e#7456#7597#0" />
             <element signature="e#5879#6487#0" />
             <element signature="e#6021#6187#0" />
             <element signature="e#6058#6187#0" />
             <element signature="e#6226#6392#0" />
             <element signature="e#6263#6392#0" />
+            <element signature="e#7539#7659#0" />
             <element signature="e#7221#7585#0" />
             <element signature="e#7370#7585#0" />
             <element signature="e#9497#9954#0" />
@@ -496,6 +617,7 @@
             <element signature="e#10662#11068#1" />
             <element signature="e#10821#10865#0" />
             <element signature="e#10902#10935#0" />
+            <element signature="e#13258#13378#0" />
             <element signature="e#11439#12295#0" />
             <element signature="e#11687#11978#0" />
             <element signature="e#11447#11838#0" />
@@ -503,30 +625,20 @@
             <element signature="e#11922#12382#0" />
             <element signature="e#12107#12363#0" />
             <element signature="e#12142#12363#0" />
+            <element signature="e#15859#15979#0" />
             <element signature="e#15443#16642#0" />
+            <element signature="e#15611#15955#0" />
+            <element signature="e#16046#16609#0" />
+            <element signature="e#16201#16364#0" />
             <element signature="e#16719#16977#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file:///anaconda3/lib/python3.7/codecs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="323" selection-start-line="323" selection-end-line="323" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///anaconda3/lib/python3.7/site-packages/numpy/core/overrides.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="479" column="63" selection-start-line="479" selection-start-column="63" selection-end-line="479" selection-end-column="63" />
+        <state relative-caret-position="210">
+          <caret line="14" lean-forward="true" selection-start-line="9" selection-end-line="14" />
           <folding>
             <element signature="e#1#19#0" expanded="true" />
             <element signature="e#499#5967#0" />
@@ -615,7 +727,6 @@
             <element signature="e#40553#40651#0" />
             <element signature="e#43835#44381#0" />
             <element signature="e#44497#45461#0" />
-            <element signature="e#45914#46677#0" />
             <element signature="e#46705#47410#0" />
             <element signature="e#47684#49193#0" />
             <element signature="e#49700#50713#0" />
@@ -624,17 +735,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///anaconda3/lib/python3.7/site-packages/matplotlib/pyplot.py">
+    <entry file="file://$PROJECT_DIR$/temp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1535">
-          <caret line="2159" column="4" selection-start-line="2159" selection-start-column="4" selection-end-line="2159" selection-end-column="4" />
+        <state relative-caret-position="821">
+          <caret line="403" column="36" lean-forward="true" selection-start-line="403" selection-start-column="36" selection-end-line="403" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/RandomPEPS.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="74" column="9" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="9" />
+        <state relative-caret-position="1410">
+          <caret line="94" selection-start-line="94" selection-end-line="94" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RandomPEPS_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_tSU_BP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-211">
+          <caret line="28" column="18" lean-forward="true" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

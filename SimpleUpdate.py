@@ -1018,13 +1018,13 @@ def TNtoDEFGtransform(defg, tensors, weights, smat):
     factorsList = absorbAllTensorNetWeights(tensors, weights, smat)
     n, m = np.shape(smat)
     for i in range(m):
-        defg.add_node(len(weights[i]), 'n' + str(defg.node_count))  # Adding virtual nodes
+        defg.add_node(len(weights[i]), 'n' + str(defg.nCounter))  # Adding virtual nodes
     for i in range(n):  # Adding factors
         neighbor_nodes = {}  # generating the neighboring nodes of the i'th factor
         edges = np.nonzero(smat[i, :])[0]
         indices = smat[i, edges]
         for j in range(len(edges)):
-            neighbor_nodes['n' + str(edges[j])] = indices[j]
+            neighbor_nodes['n' + str(edges[j])] = int(indices[j])
         defg.add_factor(neighbor_nodes, np.array(factorsList[i], dtype=complex))
     return defg
 

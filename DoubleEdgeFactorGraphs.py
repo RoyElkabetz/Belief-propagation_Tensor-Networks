@@ -29,12 +29,24 @@ class defg:
         self.rdms_broadcasting = None
 
     def add_node(self, alphabet, nName):
+        """
+        Adding a node to the double-edge factor graph (DEFG)
+        :param alphabet: the alphabet size of the node random variable
+        :param nName: name of node
+        :return: None
+        """
         self.nodes[nName] = [alphabet, set(), self.nCounter]
         self.nodes_InsertOrder.append(nName)
         self.nodes_indices[nName] = self.nCounter
         self.nCounter += 1
 
     def add_factor(self, nodeNeighbors, tensor):
+        """
+        Adding a factor to the DEFG
+        :param nodeNeighbors: the factor's neighboring node in a dictionary {node_name: index in tensor, ...}
+        :param tensor: an n dimensional np.array
+        :return: None
+        """
         fName = 'f' + str(self.fCounter)
         for n in nodeNeighbors.keys():
             if n not in self.nodes.keys():
@@ -159,10 +171,11 @@ class defg:
         return superTensor
 
     def generateSuperPhysicalTensor(self, tensor):
-        tensorIdx = np.array(range(len(tensor.shape)))
-        conjtensorIdx = cp.copy(tensorIdx) + len(tensorIdx)
+        tensorIdx = list(range(len(tensor.shape)))
+        conjtensorIdx = []
         superTensorIdx = []
-        for i in range(len(tensorIdx)):
+        for i in tensorIdx:
+            conjtensorIdx.append(i + len(tensorIdx))
             superTensorIdx.append(tensorIdx[i])
             superTensorIdx.append(conjtensorIdx[i])
         superTensor = np.einsum(tensor, tensorIdx, np.conj(tensor), conjtensorIdx, superTensorIdx)
