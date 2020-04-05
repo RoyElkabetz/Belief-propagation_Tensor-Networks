@@ -42,6 +42,8 @@ def simpleUpdate(tensors,
     :param graph: the tensor network dual double-edge factor graph
     :return: updated tensors list and weights list
     """
+    tensors = cp.deepcopy(tensors)
+    weights = cp.deepcopy(weights)
     n, m = np.shape(smat)
     for Ek in range(m):
         lambda_k = weights[Ek]

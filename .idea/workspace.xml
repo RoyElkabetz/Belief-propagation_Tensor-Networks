@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/main_tSU_BP.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomPEPS.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomPEPS.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RandomPEPS_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomPEPS_main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleUpdate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_tSU_BP.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_tSU_BP.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,33 +43,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/RandomPEPS_main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RandomPEPS.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1410">
-              <caret line="94" selection-start-line="94" selection-end-line="94" />
+            <state relative-caret-position="104">
+              <caret line="139" column="13" selection-start-line="139" selection-start-column="13" selection-end-line="139" selection-end-column="13" />
               <folding>
                 <element signature="e#1#19#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/temp.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="821">
-              <caret line="403" column="36" lean-forward="true" selection-start-line="403" selection-start-column="36" selection-end-line="403" selection-end-column="36" />
-              <folding>
-                <element signature="e#0#21#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -80,10 +57,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_tSU_BP.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-211">
-              <caret line="28" column="18" lean-forward="true" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
+            <state relative-caret-position="115">
+              <caret line="135" column="11" lean-forward="true" selection-start-line="135" selection-start-column="11" selection-end-line="135" selection-end-column="11" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#964#3338#0" />
               </folding>
             </state>
           </provider>
@@ -92,11 +70,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" lean-forward="true" selection-start-line="9" selection-end-line="14" />
+            <state relative-caret-position="294">
+              <caret line="924" selection-start-line="924" selection-end-line="924" />
               <folding>
                 <element signature="e#1#19#0" expanded="true" />
-                <element signature="e#499#5967#0" />
                 <element signature="e#499#1478#1" />
                 <element signature="e#2626#2721#0" />
                 <element signature="e#4183#4225#0" />
@@ -141,7 +118,6 @@
                 <element signature="e#16507#16619#0" />
                 <element signature="e#16662#17027#0" />
                 <element signature="e#16797#16909#0" />
-                <element signature="e#17452#19504#0" />
                 <element signature="e#17452#18532#1" />
                 <element signature="e#19535#19757#0" />
                 <element signature="e#19535#19598#1" />
@@ -174,7 +150,6 @@
                 <element signature="e#38220#39309#0" />
                 <element signature="e#36031#36987#0" />
                 <element signature="e#37075#38007#0" />
-                <element signature="e#38040#38233#0" />
                 <element signature="e#38040#38107#0" />
                 <element signature="e#40575#40994#0" />
                 <element signature="e#40570#40683#1" />
@@ -195,7 +170,7 @@
         <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="132">
-              <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
+              <caret line="58" selection-start-line="58" selection-end-line="58" />
               <folding>
                 <element signature="e#50#170#0" />
                 <element signature="e#209#681#0" />
@@ -282,12 +257,12 @@
         <option value="$PROJECT_DIR$/StructureMatrixGenerator.py" />
         <option value="$PROJECT_DIR$/Heisenberg_model_main.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/RandomPEPS.py" />
-        <option value="$PROJECT_DIR$/SimpleUpdate.py" />
-        <option value="$PROJECT_DIR$/RandomPEPS_main.py" />
         <option value="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" />
-        <option value="$PROJECT_DIR$/main_tSU_BP.py" />
         <option value="$PROJECT_DIR$/temp.py" />
+        <option value="$PROJECT_DIR$/RandomPEPS_main.py" />
+        <option value="$PROJECT_DIR$/SimpleUpdate.py" />
+        <option value="$PROJECT_DIR$/RandomPEPS.py" />
+        <option value="$PROJECT_DIR$/main_tSU_BP.py" />
       </list>
     </option>
   </component>
@@ -338,7 +313,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.temp">
+  <component name="RunManager" selected="Python.main_tSU_BP">
     <configuration name="SimpleUpdate" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -380,6 +355,25 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="main_tSU_BP" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="QBPmodule" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main_tSU_BP.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="temp" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -403,9 +397,11 @@
       <item itemvalue="Python.SimpleUpdate" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.temp" />
+      <item itemvalue="Python.main_tSU_BP" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main_tSU_BP" />
         <item itemvalue="Python.temp" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.SimpleUpdate" />
@@ -424,12 +420,12 @@
       <updated>1585223971321</updated>
       <workItem from="1585223974487" duration="1000000" />
       <workItem from="1585333546071" duration="1473000" />
-      <workItem from="1585337855853" duration="35908000" />
+      <workItem from="1585337855853" duration="41201000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38381000" />
+    <option name="totallyTimeSpent" value="43674000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="791" extended-state="6" />
@@ -479,12 +475,18 @@
           <line>376</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main_tSU_BP.py</url>
+          <line>103</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QBPmodule$SimpleUpdate.coverage" NAME="SimpleUpdate Coverage Results" MODIFIED="1585333607852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QBPmodule$temp.coverage" NAME="temp Coverage Results" MODIFIED="1586029634223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QBPmodule$main_tSU_BP.coverage" NAME="main_tSU_BP Coverage Results" MODIFIED="1586114127368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QBPmodule$main.coverage" NAME="main Coverage Results" MODIFIED="1585912789088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
@@ -498,13 +500,6 @@
     <entry file="file://$PROJECT_DIR$/bmpslib.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-13724" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/StructureMatrixGenerator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Heisenberg_model_function.py">
@@ -547,6 +542,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///anaconda3/lib/python3.7/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="309" selection-start-line="309" selection-end-line="309" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/temp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="821">
+          <caret line="403" column="36" selection-start-line="403" selection-start-column="36" selection-end-line="403" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StructureMatrixGenerator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-240">
+          <caret line="47" column="4" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RandomPEPS_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1338">
+          <caret line="97" column="23" lean-forward="true" selection-start-line="97" selection-start-column="23" selection-end-line="97" selection-end-column="23" />
+          <folding>
+            <element signature="e#2#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="164">
@@ -557,17 +586,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///anaconda3/lib/python3.7/codecs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="309" selection-start-line="309" selection-end-line="309" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
-          <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
+          <caret line="58" selection-start-line="58" selection-end-line="58" />
           <folding>
             <element signature="e#50#170#0" />
             <element signature="e#209#681#0" />
@@ -637,11 +659,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SimpleUpdate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" lean-forward="true" selection-start-line="9" selection-end-line="14" />
+        <state relative-caret-position="294">
+          <caret line="924" selection-start-line="924" selection-end-line="924" />
           <folding>
             <element signature="e#1#19#0" expanded="true" />
-            <element signature="e#499#5967#0" />
             <element signature="e#499#1478#1" />
             <element signature="e#2626#2721#0" />
             <element signature="e#4183#4225#0" />
@@ -686,7 +707,6 @@
             <element signature="e#16507#16619#0" />
             <element signature="e#16662#17027#0" />
             <element signature="e#16797#16909#0" />
-            <element signature="e#17452#19504#0" />
             <element signature="e#17452#18532#1" />
             <element signature="e#19535#19757#0" />
             <element signature="e#19535#19598#1" />
@@ -719,7 +739,6 @@
             <element signature="e#38220#39309#0" />
             <element signature="e#36031#36987#0" />
             <element signature="e#37075#38007#0" />
-            <element signature="e#38040#38233#0" />
             <element signature="e#38040#38107#0" />
             <element signature="e#40575#40994#0" />
             <element signature="e#40570#40683#1" />
@@ -735,39 +754,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/temp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="821">
-          <caret line="403" column="36" lean-forward="true" selection-start-line="403" selection-start-column="36" selection-end-line="403" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/RandomPEPS.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1410">
-          <caret line="94" selection-start-line="94" selection-end-line="94" />
+        <state relative-caret-position="104">
+          <caret line="139" column="13" selection-start-line="139" selection-start-column="13" selection-end-line="139" selection-end-column="13" />
           <folding>
             <element signature="e#1#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RandomPEPS_main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main_tSU_BP.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-211">
-          <caret line="28" column="18" lean-forward="true" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
+        <state relative-caret-position="115">
+          <caret line="135" column="11" lean-forward="true" selection-start-line="135" selection-start-column="11" selection-end-line="135" selection-end-column="11" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#964#3338#0" />
           </folding>
         </state>
       </provider>
