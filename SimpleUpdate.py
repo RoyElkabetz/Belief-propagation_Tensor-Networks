@@ -418,9 +418,7 @@ def imaginaryTimeEvolution(iTensor,
     interactionHamiltonian = np.zeros((d ** 2, d ** 2), dtype=complex)
     for i in range(len(iOperators)):
         interactionHamiltonian += np.kron(iOperators[i], jOperators[i])
-    Hamiltonian = -interactionConst[commonEdge] * interactionHamiltonian
-                  - 0.25 * fieldConst * (np.kron(np.eye(d), fieldOperators)
-                  + np.kron(fieldOperators, np.eye(d)))  # 0.25 is for square lattice
+    Hamiltonian = -interactionConst[commonEdge] * interactionHamiltonian - 0.25 * fieldConst * (np.kron(np.eye(d), fieldOperators) + np.kron(fieldOperators, np.eye(d)))  # 0.25 is for square lattice
     unitaryGate = np.reshape(linalg.expm(-timeStep * Hamiltonian), [d, d, d, d])
     weightMatrix = np.diag(middleWeightVector)
     A = np.einsum(iTensor, [0, 1, 2], weightMatrix, [1, 3], [0, 3, 2])           # A.shape = (d(i), Weight_Vector, Q1)

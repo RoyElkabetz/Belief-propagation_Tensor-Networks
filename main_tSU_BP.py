@@ -32,9 +32,9 @@ def randomPEPSmainFunction(N, M):
     mu = -1
     sigma = 0
     Jk = np.random.normal(mu, sigma, np.int((N - 1) * M + (M - 1) * N))
-    dt = [0.5, 0.1, 0.05, 0.01, 0.005]
+    dt = [0.1, 0.05, 0.01]
     iterations = 10
-    Dp = [16, 32]
+    Dp = [4, 8]
     d = 2
     smat, imat = tnf.finitePEPSobcStructureMatrixGenerator(N, M)
 
@@ -157,7 +157,7 @@ data[:, 0] = ttd_SU_BP
 data[:, 1] = ttd_SU_bMPO
 data[:, 2] = ttd_bMPO16_bMPO32
 df = pd.DataFrame(data, columns=['SU-BP', 'SU-bMPO(16)', 'bMPO(16)-bMPO(32)'], index=range(1, n + 1))
-filepath = '2020_04_03_1_16_trivial-SU_BP_experiment' + '.xlsx'
+filepath = '2020_07_05_1_16_trivial-SU_BP_experiment' + '.xlsx'
 df.to_excel(filepath, index=True)
 
 

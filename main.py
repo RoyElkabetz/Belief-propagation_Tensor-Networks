@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 
 
 # tensor network parameters
-N = 4
+N = 5
 d = 2
-D = 2
+D = 4
 
 # initialize
 structureMat, incidenceMat = smg.finitePEPSobcStructureMatrixGenerator(N, N)
@@ -64,11 +64,11 @@ for i, tensor in enumerate(tensorsNew):
     magnetization[coords[0][i], coords[1][i]] = su.singleSiteExpectation(i, tensorsNew, lambdasNew, structureMat, Sz)
 
 plt.figure()
-plt.plot(range(counter), energyPerSite, 'o')
+plt.plot(range(counter), np.real(np.asarray(energyPerSite)), 'o')
 plt.show()
 
 plt.figure()
-plt.plot(range(counter), magZ0, 'o')
+plt.plot(range(counter), np.real(np.asarray(magZ0)), 'o')
 plt.show()
 
 plt.figure()
