@@ -50,8 +50,7 @@ while flag:
                                                fieldOperators=Op_field,
                                                smat=structureMat,
                                                Dmax=D,
-                                               type='SU',
-                                               )
+                                               type='SU')
     if counter >= 1:
         if np.abs(energyPerSite[counter] - energyPerSite[counter - 1]) <= dE:
             flag = 0

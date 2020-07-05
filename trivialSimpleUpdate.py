@@ -9,47 +9,28 @@ import ncon_lists_generator as nlg
 
 ########################################################################################################################
 #                                                                                                                      #
-#                                              SIMPLE UPDATE ALGORITHM                                                 #
+#                                      trivial SIMPLE UPDATE ALGORITHM                                                 #
 #                                                                                                                      #
 ########################################################################################################################
 
 
-def simpleUpdate(tensors,
-                 weights,
-                 timeStep,
-                 interactionConst,
-                 fieldConst,
-                 iOperators,
-                 jOperators,
-                 fieldOperators,
-                 smat,
-                 Dmax,
-                 type,
-                 graph=None,
-                 singleEdge=None):
+def trivialsimpleUpdate(tensors,
+                        weights,
+                        smat,
+                        Dmax):
     """
-    The Simple Update algorithm implementation on a general finite tensor network specified by a structure matrix
+    The trivial Simple Update algorithm implementation on a general finite tensor network specified by a structure matrix
     :param tensors: list of tensors in the tensor network [T1, T2, T3, ..., Tn]
     :param weights: list of lambda weights [L1, L2, ..., Lm]
-    :param timeStep: Imaginary Time Evolution (ITE) time step
-    :param interactionConst: J_{ij} constants in the Hamiltonian
-    :param fieldConst: field constant in the Hamiltonian
-    :param iOperators: the operators associated with the i^th tensor in the Hamiltonian
-    :param jOperators: the operators associated with the j^th tensor in the Hamiltonian
-    :param fieldOperators: the operators associated with the field term in the Hamiltonian
     :param smat: tensor network structure matrix
     :param Dmax: maximal bond dimension
-    :param type: type of algorithm to use 'BP' or 'SU'
-    :param graph: the tensor network dual double-edge factor graph
-    :param singleEdge: run a single su step over that specific edge
-    :return: updated tensors list and weights list
+    :return: t-SU fixed-point tensors list and weights list
     """
     tensors = cp.deepcopy(tensors)
     weights = cp.deepcopy(weights)
     n, m = np.shape(smat)
-
-    if singleEdge:
-        Ek = singleEdge
+    d = tensors[0].shape[0]
+    for Ek in range(m):
         lambda_k = weights[Ek]
 
         # Find tensors Ti, Tj and their corresponding indices connected along edge Ek.
@@ -62,67 +43,46 @@ def simpleUpdate(tensors,
         Ti[0] = absorbWeights(Ti[0], iEdgesNidx, weights)
         Tj[0] = absorbWeights(Tj[0], jEdgesNidx, weights)
 
-        # permuting the indices associated with edge Ek tensors Ti, Tj with their 1st index
+        # permuting the indices associated with edge Ek tensors Ti, Tj with their k^th index
         Ti = indexPermute(Ti)
         Tj = indexPermute(Tj)
 
         # Group all virtual indices Em!=Ek to form Pl, Pr MPS tensors
-        Pl = rankNrank3(Ti[0])
-        Pr = rankNrank3(Tj[0])
+        R = np.reshape(Ti[0], (d, Dmax, -1))
+        L = np.reshape(Tj[0], (d, Dmax, -1))
 
-        # SVD decomposing of Pl, Pr to obtain Q1, R and Q2, L sub-tensors, respectively
-        R, sr, Q1 = truncationSVD(Pl, [0, 1], [2], keepS='yes')
-        L, sl, Q2 = truncationSVD(Pr, [0, 1], [2], keepS='yes')
-        R = R.dot(np.diag(sr))
-        L = L.dot(np.diag(sl))
+        # contract to theta tensor
+        #A = np.einsum(Pl, [0, 1, 2], np.diag(lambda_k), [1, 3], [0, 3, 2])
+        #theta = np.einsum(A, [0, 1, 2], Pr, [3, 1, 4], [0, 2, 3, 4])
+        #theta = np.tensordot(Pl, np.tensordot(np.diag(lambda_k), Pr, axes=([1], [0])), axes=([0], [0]))
 
-        # RQ decomposition of Pl, Pr to obtain R, Q1 and L, Q2 sub-tensors, respectively (needs fixing)
-        # R, Q1 = linalg.rq(np.reshape(Pl, [Pl.shape[0] * Pl.shape[1], Pl.shape[2]]))
-        # L, Q2 = linalg.rq(np.reshape(Pr, [Pr.shape[0] * Pr.shape[1], Pr.shape[2]]))
-
-        # reshaping R and L into rank 3 tensors with shape (physical_dim, Ek_dim, Q(1/2).shape[0])
-        i_physical_dim = Ti[0].shape[0]
-        j_physical_dim = Tj[0].shape[0]
-        R = rank2rank3(R, i_physical_dim)  # (i, Ek, Q1) (following the dimensions)
-        L = rank2rank3(L, j_physical_dim)  # (j, Ek, Q2)
-
-        # Contract the ITE gate with R, L, and lambda_k to form theta tensor.
         theta = imaginaryTimeEvolution(R,
                                        L,
                                        lambda_k,
                                        Ek,
-                                       timeStep,
-                                       interactionConst,
-                                       fieldConst,
-                                       iOperators,
-                                       jOperators,
-                                       fieldOperators)  # (Q1, i', j', Q2)
+                                       0,
+                                       [0] * len(weights),
+                                       0,
+                                       [np.eye(d)],
+                                       [np.eye(d)],
+                                       np.eye(d))  # (Q1, i', j', Q2)
 
-        # Obtain R', L', lambda'_k tensors by applying an SVD to theta
-        if type == 'SU':
-            R_tild, lambda_k_tild, L_tild = truncationSVD(theta, [0, 1], [2, 3], keepS='yes',
-                                                          maxEigenvalNumber=Dmax)  # with truncation
-        if type == 'BP':
-            R_tild, lambda_k_tild, L_tild = truncationSVD(theta, [0, 1], [2, 3], keepS='yes')  # without truncation
-        # (Q1 * i', D') # (D', D') # (D', j' * Q2)
-
+        R_tild, lambda_k_tild, L_tild = truncationSVD(theta, [0, 1], [2, 3], keepS='yes',
+                                                      maxEigenvalNumber=Dmax)  # with truncation
+        # SVD and truncation
         # reshaping R_tild and L_tild back to rank 3 tensor
-        R_tild = np.reshape(R_tild, (Q1.shape[0], i_physical_dim, R_tild.shape[1]))  # (Q1, i', D')
+        R_tild = np.reshape(R_tild, (R.shape[0], d, R_tild.shape[1]))  # (Q1, i', D')
         R_tild = np.transpose(R_tild, [1, 2, 0])  # (i', D', Q1)
-        L_tild = np.reshape(L_tild, (L_tild.shape[0], j_physical_dim, Q2.shape[0]))  # (D', j', Q2)
+        L_tild = np.reshape(L_tild, (L_tild.shape[0], d, L.shape[2]))  # (D', j', Q2)
         L_tild = np.transpose(L_tild, [1, 0, 2])  # (j', D', Q2)
 
-        # Glue back the R', L', sub-tensors to Q1, Q2, respectively, to form updated tensors P'l, P'r.
-        Pl_prime = np.einsum('ijk,kl->ijl', R_tild, Q1)
-        Pr_prime = np.einsum('ijk,kl->ijl', L_tild, Q2)
+        # reshape back to original shape
+        Pl_tilde = np.reshape(Pl_tilde, (d, Dmax, -1))
+        Pr_tilde = np.reshape(Pr_tilde, (d, Dmax, -1))
 
-        # Reshape back the P`l, P`r to the original rank-(z + 1) tensors Ti, Tj
-        Ti_new_shape = list(Ti[0].shape)
-        Ti_new_shape[1] = len(lambda_k_tild)
-        Tj_new_shape = list(Tj[0].shape)
-        Tj_new_shape[1] = len(lambda_k_tild)
-        Ti[0] = rank3rankN(Pl_prime, Ti_new_shape)
-        Tj[0] = rank3rankN(Pr_prime, Tj_new_shape)
+        # reshape back to original shape
+        Ti[0] = np.reshape(Pl_tilde, Ti[0].shape)
+        Tj[0] = np.reshape(Pr_tilde, Tj[0].shape)
 
         # permuting back the legs of Ti and Tj
         Ti = indexPermute(Ti)
@@ -136,100 +96,6 @@ def simpleUpdate(tensors,
         tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
         tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
         weights[Ek] = lambda_k_tild / np.sum(lambda_k_tild)
-
-
-
-    else:
-        for Ek in range(m):
-            lambda_k = weights[Ek]
-
-            # Find tensors Ti, Tj and their corresponding indices connected along edge Ek.
-            Ti, Tj = getTensors(Ek, tensors, smat)
-
-            # collect edges and remove the Ek edge from both lists
-            iEdgesNidx, jEdgesNidx = getTensorsEdges(Ek, smat)
-
-            # absorb environment (lambda weights) into tensors
-            Ti[0] = absorbWeights(Ti[0], iEdgesNidx, weights)
-            Tj[0] = absorbWeights(Tj[0], jEdgesNidx, weights)
-
-            # permuting the indices associated with edge Ek tensors Ti, Tj with their 1st index
-            Ti = indexPermute(Ti)
-            Tj = indexPermute(Tj)
-
-            # Group all virtual indices Em!=Ek to form Pl, Pr MPS tensors
-            Pl = rankNrank3(Ti[0])
-            Pr = rankNrank3(Tj[0])
-
-            # SVD decomposing of Pl, Pr to obtain Q1, R and Q2, L sub-tensors, respectively
-            R, sr, Q1 = truncationSVD(Pl, [0, 1], [2], keepS='yes')
-            L, sl, Q2 = truncationSVD(Pr, [0, 1], [2], keepS='yes')
-            R = R.dot(np.diag(sr))
-            L = L.dot(np.diag(sl))
-
-            # RQ decomposition of Pl, Pr to obtain R, Q1 and L, Q2 sub-tensors, respectively (needs fixing)
-            #R, Q1 = linalg.rq(np.reshape(Pl, [Pl.shape[0] * Pl.shape[1], Pl.shape[2]]))
-            #L, Q2 = linalg.rq(np.reshape(Pr, [Pr.shape[0] * Pr.shape[1], Pr.shape[2]]))
-
-            # reshaping R and L into rank 3 tensors with shape (physical_dim, Ek_dim, Q(1/2).shape[0])
-            i_physical_dim = Ti[0].shape[0]
-            j_physical_dim = Tj[0].shape[0]
-            R = rank2rank3(R, i_physical_dim)  # (i, Ek, Q1) (following the dimensions)
-            L = rank2rank3(L, j_physical_dim)  # (j, Ek, Q2)
-
-            # Contract the ITE gate with R, L, and lambda_k to form theta tensor.
-            theta = imaginaryTimeEvolution(R,
-                                           L,
-                                           lambda_k,
-                                           Ek,
-                                           timeStep,
-                                           interactionConst,
-                                           fieldConst,
-                                           iOperators,
-                                           jOperators,
-                                           fieldOperators)  # (Q1, i', j', Q2)
-
-            # Obtain R', L', lambda'_k tensors by applying an SVD to theta
-            if type == 'SU':
-                R_tild, lambda_k_tild, L_tild = truncationSVD(theta, [0, 1], [2, 3], keepS='yes', maxEigenvalNumber=Dmax) # with truncation
-            if type == 'BP':
-                R_tild, lambda_k_tild, L_tild = truncationSVD(theta, [0, 1], [2, 3], keepS='yes') # without truncation
-            # (Q1 * i', D') # (D', D') # (D', j' * Q2)
-
-            # reshaping R_tild and L_tild back to rank 3 tensor
-            R_tild = np.reshape(R_tild, (Q1.shape[0], i_physical_dim, R_tild.shape[1]))  # (Q1, i', D')
-            R_tild = np.transpose(R_tild, [1, 2, 0])  # (i', D', Q1)
-            L_tild = np.reshape(L_tild, (L_tild.shape[0], j_physical_dim, Q2.shape[0]))  # (D', j', Q2)
-            L_tild = np.transpose(L_tild, [1, 0, 2])  # (j', D', Q2)
-
-            # Glue back the R', L', sub-tensors to Q1, Q2, respectively, to form updated tensors P'l, P'r.
-            Pl_prime = np.einsum('ijk,kl->ijl', R_tild, Q1)
-            Pr_prime = np.einsum('ijk,kl->ijl', L_tild, Q2)
-
-            # Reshape back the P`l, P`r to the original rank-(z + 1) tensors Ti, Tj
-            Ti_new_shape = list(Ti[0].shape)
-            Ti_new_shape[1] = len(lambda_k_tild)
-            Tj_new_shape = list(Tj[0].shape)
-            Tj_new_shape[1] = len(lambda_k_tild)
-            Ti[0] = rank3rankN(Pl_prime, Ti_new_shape)
-            Tj[0] = rank3rankN(Pr_prime, Tj_new_shape)
-
-            # permuting back the legs of Ti and Tj
-            Ti = indexPermute(Ti)
-            Tj = indexPermute(Tj)
-
-            # Remove bond matrices lambda_m from virtual legs m != Ek to obtain the updated tensors Ti~, Tj~.
-            Ti[0] = absorbInverseWeights(Ti[0], iEdgesNidx, weights)
-            Tj[0] = absorbInverseWeights(Tj[0], jEdgesNidx, weights)
-
-            # Normalize and save new Ti Tj and lambda_k
-            tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
-            tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
-            weights[Ek] = lambda_k_tild / np.sum(lambda_k_tild)
-
-            # single edge BP update (uncomment for single edge BP implemintation)
-            if type == 'BP':
-                tensors, weights = singleEdgeBPU(tensors, weights, smat, Dmax, Ek, graph)
 
     return tensors, weights
 
@@ -400,14 +266,14 @@ def absorbInverseWeights(tensor, edgesNidx, weights):
     return tensor
 
 
-def indexPermute(tensor):
+def indexPermute(tensor, k=1):
     """
-    Swapping the 'tensor_index_along_edge' index with the 1st index
+    Swapping the 'tensor_index_along_edge' index with the kth index
     :param tensor: [tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
     :return: the list with the permuted tensor [permuted_tensor, [#, 'tensor_number'], [#, 'tensor_index_along_edge']]
     """
     permutation = np.array(list(range(len(tensor[0].shape))))
-    permutation[[1, tensor[2][0]]] = permutation[[tensor[2][0], 1]]
+    permutation[[k, tensor[2][0]]] = permutation[[tensor[2][0], k]]
     tensor[0] = np.transpose(tensor[0], permutation)
     return tensor
 
@@ -435,7 +301,7 @@ def rank2rank3(tensor, physicalDimension):
     :return: rank-3 new tensor such that:
              newTensor.shape = (oldTensor.shape[0], oldTensor.shape[0] / physicalDimension, oldTensor.shape[1])
     """
-    if len(tensor.shape) is not 2:
+    if len(tensor.shape) != 2:
         raise IndexError('Error: 00003')
     newTensor = np.reshape(tensor, [physicalDimension, int(tensor.shape[0] / physicalDimension), tensor.shape[1]])
     return newTensor
