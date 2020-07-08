@@ -185,3 +185,4 @@ plt.figure()
 plt.plot(range(len(errors_su)), errors_su)
 #plt.legend(['tSU', 'SU'])
 plt.show()
+

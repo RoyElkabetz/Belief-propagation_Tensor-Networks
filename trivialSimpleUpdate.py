@@ -26,16 +26,16 @@ def trivialsimpleUpdate(tensors,
     :param Dmax: maximal bond dimension
     :return: t-SU fixed-point tensors list and weights list
     """
-    tensors = cp.deepcopy(tensors)
-    weights = cp.deepcopy(weights)
+    local_tensors = cp.deepcopy(tensors)
+    local_weights = cp.deepcopy(weights)
     n, m = np.shape(smat)
-    d = tensors[0].shape[0]
+    d = local_tensors[0].shape[0]
     for Ek in range(m):
-        lambda_k = weights[Ek]
+        lambda_k = local_weights[Ek]
         D = len(lambda_k)
 
         # Find tensors Ti, Tj and their corresponding indices connected along edge Ek.
-        Ti, Tj = getTensors(Ek, tensors, smat)
+        Ti, Tj = getTensors(Ek, local_tensors, smat)
 
         # collect edges and remove the Ek edge from both lists
         iEdgesNidx, jEdgesNidx = getTensorsEdges(Ek, smat)
@@ -602,7 +602,7 @@ def doubleSiteRDM(commonEdge, tensors, weights, smat):
     return rdm
 
 
-def BPdoubleSiteRDM(commonEdge, tensors, weights, smat, messages):
+def BPdoubleSiteRDM1(commonEdge, tensors, weights, smat, messages):
     """
     Calculating the double site reduced density matrix rho_{iji'j'} using the BP messages as environments.
     :param commonEdge: the two tensorNet
@@ -614,13 +614,36 @@ def BPdoubleSiteRDM(commonEdge, tensors, weights, smat, messages):
     """
     commonWeight = cp.copy(weights[commonEdge])
     SiteI, SiteJ = getTensors(commonEdge, tensors, smat)
-    SiteIconj, siteJconj = getConjTensors(commonEdge, tensors, smat)
+    SiteIconj, SiteJconj = getConjTensors(commonEdge, tensors, smat)
     edgeNidxI, edgeNidxJ = getTensorsEdges(commonEdge, smat)
-
+    SiteI[0] = absorbSqrtWeights(SiteI[0], edgeNidxI, weights)
+    SiteJ[0] = absorbSqrtWeights(SiteJ[0], edgeNidxJ, weights)
+    SiteIconj[0] = absorbSqrtWeights(SiteIconj[0], edgeNidxI, weights)
+    SiteJconj[0] = absorbSqrtWeights(SiteJconj[0], edgeNidxJ, weights)
+    #SiteI[0] = absorbWeights(SiteI[0], edgeNidxI, weights)
+    #SiteJ[0] = absorbWeights(SiteJ[0], edgeNidxJ, weights)
+    #SiteIconj[0] = absorbWeights(SiteIconj[0], edgeNidxI, weights)
+    #siteJconj[0] = absorbWeights(siteJconj[0], edgeNidxJ, weights)
+    
+    
     for i, edge in enumerate(edgeNidxI[0]):
-        idx = edgeNidxI[1][i]
-        mess =
+        idx = int(edgeNidxI[1][i])
+        mess = messages['n' + str(edge)]['f' + str(SiteI[1][0])]
+        I_idx = list(range(len(SiteI[0].shape)))
+        mess_idx = [idx, len(SiteI[0].shape)]
+        final_idx = list(range(len(SiteI[0].shape)))
+        final_idx[idx] = mess_idx[1]
+        SiteI[0] = np.einsum(SiteI[0], I_idx, mess, mess_idx, final_idx)
 
+    for i, edge in enumerate(edgeNidxJ[0]):
+        idx = int(edgeNidxJ[1][i])
+        mess = messages['n' + str(edge)]['f' + str(SiteJ[1][0])]
+        J_idx = list(range(len(SiteJ[0].shape)))
+        mess_idx = [idx, len(SiteJ[0].shape)]
+        final_idx = list(range(len(SiteJ[0].shape)))
+        final_idx[idx] = mess_idx[1]
+        SiteJ[0] = np.einsum(SiteJ[0], J_idx, mess, mess_idx, final_idx)    
+    
     ## setting lists of tensors and indices for ncon.ncon
     t = 20000
     commonEdgeIdx = [t, t + 1]
@@ -634,14 +657,14 @@ def BPdoubleSiteRDM(commonEdge, tensors, weights, smat, messages):
     siteIconjIdx[SiteIconj[2][0]] = commonEdgeConjIdx[0]
 
     siteJidx = list(range(len(SiteI[0].shape) + 1, len(SiteI[0].shape) + 1 + len(SiteJ[0].shape)))
-    siteJconjIdx = list(range(len(SiteIconj[0].shape) + 1, len(SiteIconj[0].shape) + 1 + len(siteJconj[0].shape)))
+    siteJconjIdx = list(range(len(SiteIconj[0].shape) + 1, len(SiteIconj[0].shape) + 1 + len(SiteJconj[0].shape)))
     siteJidx[0] = -3  # j
     siteJconjIdx[0] = -4  # j'
     siteJidx[SiteJ[2][0]] = commonEdgeIdx[1]
-    siteJconjIdx[siteJconj[2][0]] = commonEdgeConjIdx[1]
+    siteJconjIdx[SiteJconj[2][0]] = commonEdgeConjIdx[1]
 
-    # two site expectation calculation
-    tensors = [SiteI[0], SiteIconj[0], SiteJ[0], siteJconj[0], np.diag(commonWeight), np.diag(commonWeight)]
+    # two site rdm calculation
+    tensors = [SiteI[0], SiteIconj[0], SiteJ[0], SiteJconj[0], np.diag(commonWeight), np.diag(commonWeight)]
     indices = [siteIidx, siteIconjIdx, siteJidx, siteJconjIdx, commonEdgeIdx, commonEdgeConjIdx]
     rdm = ncon.ncon(tensors, indices)  # rho_{i, i', j, j'}
     rdm = np.reshape(rdm, (rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3]))  # rho_{i * i', j * j'}
@@ -839,8 +862,8 @@ def BPenergyPerSite(defg, smat, Jk, h, iOp, jOp, fieldOp):
     energy /= n
     return energy
 
-
-def BPdoubleSiteRDM(commonEdge, graph, smat):
+#fix
+def BPdoubleSiteRDM2(commonEdge, graph, smat):
     """
     Given two tensors common edge in a TensorNet and its dual DEFG this function returns the reduced density matrix
     rho_{i * j, i' * j'} where i,j relate to the ket and i',j' relate to the bra.
