@@ -32,6 +32,7 @@ def trivialsimpleUpdate(tensors,
     d = tensors[0].shape[0]
     for Ek in range(m):
         lambda_k = weights[Ek]
+        D = len(lambda_k)
 
         # Find tensors Ti, Tj and their corresponding indices connected along edge Ek.
         Ti, Tj = getTensors(Ek, tensors, smat)
@@ -47,55 +48,48 @@ def trivialsimpleUpdate(tensors,
         Ti = indexPermute(Ti)
         Tj = indexPermute(Tj)
 
-        # Group all virtual indices Em!=Ek to form Pl, Pr MPS tensors
-        R = np.reshape(Ti[0], (d, Dmax, -1))
-        L = np.reshape(Tj[0], (d, Dmax, -1))
+        # Group all virtual indices Em!=Ek to form Mi, Mj MPS tensors
+        Mi = np.reshape(Ti[0], (d, D, -1))  # (i, Ek, rest_i)
+        Mj = np.reshape(Tj[0], (d, D, -1))  # (j, Ek, rest_j)
 
         # contract to theta tensor
-        #A = np.einsum(Pl, [0, 1, 2], np.diag(lambda_k), [1, 3], [0, 3, 2])
-        #theta = np.einsum(A, [0, 1, 2], Pr, [3, 1, 4], [0, 2, 3, 4])
-        #theta = np.tensordot(Pl, np.tensordot(np.diag(lambda_k), Pr, axes=([1], [0])), axes=([0], [0]))
+        A = np.einsum(Mi, [0, 1, 2], np.diag(lambda_k), [1, 3], [0, 3, 2])  # Mi(i, Ek, rest_i)
+        theta = np.einsum(A, [0, 1, 2], Mj, [3, 1, 4], [0, 2, 3, 4])  # theta(i, rest_i, j, rest_j)
 
-        theta = imaginaryTimeEvolution(R,
-                                       L,
-                                       lambda_k,
-                                       Ek,
-                                       0,
-                                       [0] * len(weights),
-                                       0,
-                                       [np.eye(d)],
-                                       [np.eye(d)],
-                                       np.eye(d))  # (Q1, i', j', Q2)
-
-        R_tild, lambda_k_tild, L_tild = truncationSVD(theta, [0, 1], [2, 3], keepS='yes',
-                                                      maxEigenvalNumber=Dmax)  # with truncation
         # SVD and truncation
-        # reshaping R_tild and L_tild back to rank 3 tensor
-        R_tild = np.reshape(R_tild, (R.shape[0], d, R_tild.shape[1]))  # (Q1, i', D')
-        R_tild = np.transpose(R_tild, [1, 2, 0])  # (i', D', Q1)
-        L_tild = np.reshape(L_tild, (L_tild.shape[0], d, L.shape[2]))  # (D', j', Q2)
-        L_tild = np.transpose(L_tild, [1, 0, 2])  # (j', D', Q2)
+        U, lambda_k_t, V = truncationSVD(theta, [0, 1], [2, 3], keepS='yes',
+                                                      maxEigenvalNumber=Dmax)  # with truncation
+        # Shapes after SVD
+        # U (i * rest_i, D_max)
+        # V (D_max, j * rest_j)
+        # lambda_k_t (D_max)
 
-        # reshape back to original shape
-        Pl_tilde = np.reshape(Pl_tilde, (d, Dmax, -1))
-        Pr_tilde = np.reshape(Pr_tilde, (d, Dmax, -1))
+        # reshaping U and V back to MPS tensors
+        U = np.reshape(U, (d, Mi.shape[2], U.shape[1]))  # (i, rest_i, D_max)
+        Mi_t = np.transpose(U, [0, 2, 1])  # (i, D_max, rest_i)
+        V = np.reshape(V, (V.shape[0], d, Mj.shape[2]))  # (D_max, j, rest_j)
+        Mj_t = np.transpose(V, [1, 0, 2])  # (j, D_max, rest_j)
 
-        # reshape back to original shape
-        Ti[0] = np.reshape(Pl_tilde, Ti[0].shape)
-        Tj[0] = np.reshape(Pr_tilde, Tj[0].shape)
+        # set new shapes and reshape back to original shape tensors
+        i_new_shape = list(Ti[0].shape)
+        i_new_shape[1] = Mi_t.shape[1]
+        j_new_shape = list(Tj[0].shape)
+        j_new_shape[1] = Mj_t.shape[1]
+        Ti[0] = np.reshape(Mi_t, i_new_shape)
+        Tj[0] = np.reshape(Mj_t, j_new_shape)
 
         # permuting back the legs of Ti and Tj
         Ti = indexPermute(Ti)
         Tj = indexPermute(Tj)
 
-        # Remove bond matrices lambda_m from virtual legs m != Ek to obtain the updated tensors Ti~, Tj~.
+        # Remove bond matrices lambda_m from virtual legs Em != Ek to obtain the updated tensors T'i, T'j.
         Ti[0] = absorbInverseWeights(Ti[0], iEdgesNidx, weights)
         Tj[0] = absorbInverseWeights(Tj[0], jEdgesNidx, weights)
 
-        # Normalize and save new Ti Tj and lambda_k
+        # Normalize and save new T'i T'j and lambda'_k
         tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
         tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
-        weights[Ek] = lambda_k_tild / np.sum(lambda_k_tild)
+        weights[Ek] = lambda_k_t / np.sum(lambda_k_t)
 
     return tensors, weights
 
@@ -564,7 +558,7 @@ def doubleSiteNorm(commonEdge, tensors, weights, smat):
 
 def doubleSiteRDM(commonEdge, tensors, weights, smat):
     """
-    Calculating the double site reduced density matrix rho_{ii', jj'} using the simple update weights as environments.
+    Calculating the double site reduced density matrix rho_{iji'j'} using the simple update weights as environments.
     :param commonEdge: the two tensorNet
     :param tensors: the TensorNet tensors list
     :param weights: the TensorNet weights list
@@ -603,7 +597,54 @@ def doubleSiteRDM(commonEdge, tensors, weights, smat):
     tensors = [SiteI[0], SiteIconj[0], SiteJ[0], siteJconj[0], np.diag(commonWeight), np.diag(commonWeight)]
     indices = [siteIidx, siteIconjIdx, siteJidx, siteJconjIdx, commonEdgeIdx, commonEdgeConjIdx]
     rdm = ncon.ncon(tensors, indices)  # rho_{i, i', j, j'}
-    rdm = rdm.reshape(rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3])  # rho_{i * i', j * j'}
+    rdm = np.reshape(rdm, (rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3]))  # rho_{i * i', j * j'}
+    rdm /= np.trace(rdm)
+    return rdm
+
+
+def BPdoubleSiteRDM(commonEdge, tensors, weights, smat, messages):
+    """
+    Calculating the double site reduced density matrix rho_{iji'j'} using the BP messages as environments.
+    :param commonEdge: the two tensorNet
+    :param tensors: the TensorNet tensors list
+    :param weights: the TensorNet weights list
+    :param smat: structure matrix
+    :param messages: BP node-to-factor messages
+    :return: two site RDM rho_{i * i', j * j'} when {i, j} relate to the ket and {i', j'} to the bra.
+    """
+    commonWeight = cp.copy(weights[commonEdge])
+    SiteI, SiteJ = getTensors(commonEdge, tensors, smat)
+    SiteIconj, siteJconj = getConjTensors(commonEdge, tensors, smat)
+    edgeNidxI, edgeNidxJ = getTensorsEdges(commonEdge, smat)
+
+    for i, edge in enumerate(edgeNidxI[0]):
+        idx = edgeNidxI[1][i]
+        mess =
+
+    ## setting lists of tensors and indices for ncon.ncon
+    t = 20000
+    commonEdgeIdx = [t, t + 1]
+    commonEdgeConjIdx = [t + 2, t + 3]
+
+    siteIidx = list(range(len(SiteI[0].shape)))
+    siteIconjIdx = list(range(len(SiteIconj[0].shape)))
+    siteIidx[0] = -1  # i
+    siteIconjIdx[0] = -2  # i'
+    siteIidx[SiteI[2][0]] = commonEdgeIdx[0]
+    siteIconjIdx[SiteIconj[2][0]] = commonEdgeConjIdx[0]
+
+    siteJidx = list(range(len(SiteI[0].shape) + 1, len(SiteI[0].shape) + 1 + len(SiteJ[0].shape)))
+    siteJconjIdx = list(range(len(SiteIconj[0].shape) + 1, len(SiteIconj[0].shape) + 1 + len(siteJconj[0].shape)))
+    siteJidx[0] = -3  # j
+    siteJconjIdx[0] = -4  # j'
+    siteJidx[SiteJ[2][0]] = commonEdgeIdx[1]
+    siteJconjIdx[siteJconj[2][0]] = commonEdgeConjIdx[1]
+
+    # two site expectation calculation
+    tensors = [SiteI[0], SiteIconj[0], SiteJ[0], siteJconj[0], np.diag(commonWeight), np.diag(commonWeight)]
+    indices = [siteIidx, siteIconjIdx, siteJidx, siteJconjIdx, commonEdgeIdx, commonEdgeConjIdx]
+    rdm = ncon.ncon(tensors, indices)  # rho_{i, i', j, j'}
+    rdm = np.reshape(rdm, (rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3]))  # rho_{i * i', j * j'}
     rdm /= np.trace(rdm)
     return rdm
 
