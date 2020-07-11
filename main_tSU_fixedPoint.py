@@ -25,7 +25,7 @@ np.random.seed(1)
 N, M = 4, 4
 bc = 'open'
 dw = 1e-10
-D_max = 3
+D_max = 2
 t_max = 100
 epsilon = 1e-5
 dumping = 0.2
@@ -35,6 +35,40 @@ smat, _ = smg.finitePEPSobcStructureMatrixGenerator(N, M)
 tensors_tsu, weights_tsu = smg.randomTensornetGenerator(smat, d, D_max)
 tensors_su, weights_su = cp.deepcopy(tensors_tsu), cp.deepcopy(weights_tsu)
 n, m = smat.shape
+
+
+def getBMPOedgeList(N, M, smat):
+    TN = np.arange(N * M).reshape(N, M)
+    Hpairs = []
+    Vpairs = []
+    HedgeList = []
+    VedgeList = []
+    for i in range(N):
+        for j in range(M - 1):
+            tH1 = TN[i][j]
+            tH2 = TN[i][j + 1]
+            Hpairs.append([tH1, tH2])
+
+    for i in range(N - 1):
+        for j in range(M):
+            tV1 = TN[i][j]
+            tV2 = TN[i + 1][j]
+            Vpairs.append([tV1, tV2])
+
+    for i, pair in enumerate(Hpairs):
+        for k in range(m):
+            if smat[pair[0], k] and smat[pair[1], k]:
+                HedgeList.append(k)
+                break
+    for i, pair in enumerate(Vpairs):
+        for k in range(m):
+            if smat[pair[0], k] and smat[pair[1], k]:
+                VedgeList.append(k)
+                break
+
+    return HedgeList + VedgeList
+
+
 
 # SU parameters
 Z = np.array([[1, 0], [0, -1]])
@@ -70,7 +104,7 @@ for i in range(iterations):
 pre_graph = defg.defg()
 pre_graph = su.TNtoDEFGtransform(pre_graph, tensors_su, weights_su, smat)
 s = time.time()
-pre_graph.sumProduct(t_max, epsilon, dumping, printTime=1)
+pre_graph.sumProduct(t_max, epsilon, dumping, printTime=1, RDMconvergence=0)
 pre_tot = time.time() - s
 pre_graph.calculateFactorsBeliefs()
 
@@ -104,7 +138,7 @@ for i in range(iterations):
 post_graph = defg.defg()
 post_graph = su.TNtoDEFGtransform(post_graph, tensors_su, weights_su, smat)
 s = time.time()
-post_graph.sumProduct(t_max, epsilon, dumping, printTime=1)
+post_graph.sumProduct(t_max, epsilon, dumping, printTime=1, RDMconvergence=0)
 post_tot = time.time() - s
 post_graph.calculateFactorsBeliefs()
 
@@ -145,7 +179,7 @@ for _ in range(1):
 rho_next_SU = []
 # RDMS using BP and SU
 for i in range(n):
-    rho_next_SU.append(su.singleSiteRDM(i, tensors_su_next, weights_su_next, smat))
+    rho_next_SU.append(su.singleSiteRDM(i, tensors_su, weights_su, smat))
 d_post_su_next = 0
 for i in range(n):
     d_post_su_next += su.traceDistance(rho_post_graph[i], rho_next_SU[i])
@@ -180,9 +214,21 @@ for i in range(iterations):
     tensors_su = tensors_su_next
     weights_su = weights_su_next
 
-plt.figure()
+#plt.figure()
 #plt.plot(range(len(errors_tsu)), errors_tsu)
-plt.plot(range(len(errors_su)), errors_su)
+#plt.plot(range(len(errors_su)), errors_su)
 #plt.legend(['tSU', 'SU'])
-plt.show()
+#plt.show()
 
+
+# RDMS using BMPO from bmpslib
+
+tensors_su_p = su.absorbAllTensorNetWeights(tensors_su, weights_su, smat)
+tensors_su_p = smg.PEPS_OBC_broadcast_to_Itai(tensors_su_p, [N, M], d, D_max)
+peps = bmps.peps(N, M)
+for t, T in enumerate(tensors_su_p):
+    i, j = np.unravel_index(t, [N, M])
+    peps.set_site(T, i, j)
+BMPO_RDMS = bmps.calculate_PEPS_2RDM(peps, int(2 * (D_max ** 2)))
+for i in range(len(BMPO_RDMS)):
+    BMPO_RDMS[i] = np.reshape(BMPO_RDMS[i], (d * d, d * d))

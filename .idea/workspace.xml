@@ -3,9 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment3-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment3-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment2-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment2-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment4-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment4-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_tSU_fixedPoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_tSU_fixedPoint.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tSU_fixedPoint_experiment3.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tSU_fixedPoint_experiment3.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tSU_fixedPoint_experiment2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tSU_fixedPoint_experiment2.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tSU_fixedPoint_experiment4.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/tSU_fixedPoint_experiment4.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trivialSimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/trivialSimpleUpdate.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -206,27 +209,51 @@
     <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.791@0.23.1440.791" timestamp="1593898838159" />
     <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.792@0.23.1440.792" timestamp="1593899275917" />
     <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.795@0.23.1440.795" timestamp="1593974827499" />
-    <state width="1419" height="202" key="GridCell.Tab.0.bottom" timestamp="1593980794749">
-      <screen x="0" y="23" width="1440" height="792" />
+    <state width="1419" height="251" key="GridCell.Tab.0.bottom" timestamp="1594496807181">
+      <screen x="0" y="23" width="1440" height="795" />
     </state>
     <state width="1419" height="202" key="GridCell.Tab.0.bottom/0.23.1440.792@0.23.1440.792" timestamp="1593980794749" />
-    <state width="1419" height="202" key="GridCell.Tab.0.center" timestamp="1593980794747">
-      <screen x="0" y="23" width="1440" height="792" />
+    <state width="1419" height="251" key="GridCell.Tab.0.bottom/0.23.1440.795@0.23.1440.795" timestamp="1594496807181" />
+    <state width="1419" height="251" key="GridCell.Tab.0.center" timestamp="1594496807179">
+      <screen x="0" y="23" width="1440" height="795" />
     </state>
     <state width="1419" height="202" key="GridCell.Tab.0.center/0.23.1440.792@0.23.1440.792" timestamp="1593980794747" />
-    <state width="1419" height="202" key="GridCell.Tab.0.left" timestamp="1593980794746">
-      <screen x="0" y="23" width="1440" height="792" />
+    <state width="1419" height="251" key="GridCell.Tab.0.center/0.23.1440.795@0.23.1440.795" timestamp="1594496807179" />
+    <state width="1419" height="251" key="GridCell.Tab.0.left" timestamp="1594496807178">
+      <screen x="0" y="23" width="1440" height="795" />
     </state>
     <state width="1419" height="202" key="GridCell.Tab.0.left/0.23.1440.792@0.23.1440.792" timestamp="1593980794746" />
-    <state width="1419" height="202" key="GridCell.Tab.0.right" timestamp="1593980794748">
-      <screen x="0" y="23" width="1440" height="792" />
+    <state width="1419" height="251" key="GridCell.Tab.0.left/0.23.1440.795@0.23.1440.795" timestamp="1594496807178" />
+    <state width="1419" height="251" key="GridCell.Tab.0.right" timestamp="1594496807181">
+      <screen x="0" y="23" width="1440" height="795" />
     </state>
     <state width="1419" height="202" key="GridCell.Tab.0.right/0.23.1440.792@0.23.1440.792" timestamp="1593980794748" />
+    <state width="1419" height="251" key="GridCell.Tab.0.right/0.23.1440.795@0.23.1440.795" timestamp="1594496807181" />
+    <state width="1419" height="251" key="GridCell.Tab.1.bottom" timestamp="1594496807185">
+      <screen x="0" y="23" width="1440" height="795" />
+    </state>
+    <state width="1419" height="251" key="GridCell.Tab.1.bottom/0.23.1440.795@0.23.1440.795" timestamp="1594496807185" />
+    <state width="1419" height="251" key="GridCell.Tab.1.center" timestamp="1594496807183">
+      <screen x="0" y="23" width="1440" height="795" />
+    </state>
+    <state width="1419" height="251" key="GridCell.Tab.1.center/0.23.1440.795@0.23.1440.795" timestamp="1594496807183" />
+    <state width="1419" height="251" key="GridCell.Tab.1.left" timestamp="1594496807182">
+      <screen x="0" y="23" width="1440" height="795" />
+    </state>
+    <state width="1419" height="251" key="GridCell.Tab.1.left/0.23.1440.795@0.23.1440.795" timestamp="1594496807182" />
+    <state width="1419" height="251" key="GridCell.Tab.1.right" timestamp="1594496807183">
+      <screen x="0" y="23" width="1440" height="795" />
+    </state>
+    <state width="1419" height="251" key="GridCell.Tab.1.right/0.23.1440.795@0.23.1440.795" timestamp="1594496807183" />
     <state x="229" y="57" key="SettingsEditor" timestamp="1593968217627">
       <screen x="0" y="23" width="1440" height="792" />
     </state>
     <state x="229" y="57" key="SettingsEditor/0.23.1440.791@0.23.1440.791" timestamp="1593899147219" />
     <state x="229" y="57" key="SettingsEditor/0.23.1440.792@0.23.1440.792" timestamp="1593968217627" />
+    <state x="385" y="142" width="670" height="676" key="search.everywhere.popup" timestamp="1594498423611">
+      <screen x="0" y="23" width="1440" height="795" />
+    </state>
+    <state x="385" y="142" width="670" height="676" key="search.everywhere.popup/0.23.1440.795@0.23.1440.795" timestamp="1594498423611" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -235,6 +262,11 @@
           <url>file://$PROJECT_DIR$/Heisenberg_model_function.py</url>
           <line>212</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DoubleEdgeFactorGraphs.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

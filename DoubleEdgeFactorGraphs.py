@@ -1,6 +1,7 @@
 import numpy as np
 import copy as cp
 import time
+import ncon
 
 ########################################################################################################################
 #                                                                                                                      #
@@ -19,6 +20,7 @@ class defg:
         self.nodes = {}
         self.nodesBeliefs = None
         self.rdms_dotProduct = None
+        self.twoBodyRDMS = None
         self.factorsBeliefs = None
         self.fCounter = 0
         self.messages_n2f = None
@@ -63,7 +65,7 @@ class defg:
 #                                                                                                                      #
 ########################################################################################################################
 
-    def sumProduct(self, tmax, epsilon, dumping, initializeMessages=None, printTime=None):
+    def sumProduct(self, tmax, epsilon, dumping, initializeMessages=None, printTime=None, RDMconvergence=None):
         factors = self.factors
         nodes = self.nodes
 
@@ -84,6 +86,13 @@ class defg:
                 for n in factors[f][0]:
                     alphabet = nodes[n][0]
                     factor2node[f][n] = self.messageInit(alphabet)
+            # save messages
+            self.messages_n2f = cp.deepcopy(node2factor)
+            self.messages_f2n = cp.deepcopy(factor2node)
+
+        # calculate two body RDMS in order to check the convergence of BP
+        if RDMconvergence:
+            self.calculateTwoBodyRDMS()
 
         for t in range(tmax):
             # save previous step messages
@@ -111,14 +120,19 @@ class defg:
                     factor2node[f][n] /= np.trace(factor2node[f][n])
 
             # save this step new messages
-            self.messages_n2f = node2factor
-            self.messages_f2n = factor2node
+            self.messages_n2f = cp.deepcopy(node2factor)
+            self.messages_f2n = cp.deepcopy(factor2node)
 
-            # check if all messages converged
-            if self.checkBPconvergence(preMessages_n2f, preMessages_f2n, epsilon):
-                break
+            # check convergence using RDMS or messages
+            if RDMconvergence and t > 0:
+                if self.checkBPconvergenceTwoBodyRDMS(epsilon):
+                    break
+            else:
+                if self.checkBPconvergence(preMessages_n2f, preMessages_f2n, epsilon):
+                    break
         if printTime:
             print("BP converged in %d iterations " % t)
+        return
 
     def f2n_message(self, f, n, messages):
         neighbors, tensor, index = cp.deepcopy(self.factors[f])
@@ -250,6 +264,86 @@ class defg:
             belief = np.einsum(tensor, tensorIdx, conjTensor, conjTensorIdx, messageFinalIdx)
             belief /= np.trace(belief)
             self.rdms_dotProduct.append(belief)
+
+    def calculateTwoBodyRDMS(self):
+        self.twoBodyRDMS = []
+        messages = self.messages_n2f
+        for n in range(self.nCounter):
+            node = 'n' + str(n)
+            # in DEFG every node has only two factor neighbors
+            alphabet, fNeighbors, nIndex = cp.deepcopy(self.nodes[node])
+            f0, f1 = fNeighbors
+
+            # collect the node factor neighbors
+            nNeighbors0, factor0, fIndex0 = cp.deepcopy(self.factors[f0])
+            nNeighbors1, factor1, fIndex1 = cp.deepcopy(self.factors[f1])
+
+            # absorb messages in single edge factors
+            for n0 in nNeighbors0:
+                if n0 == node:
+                    continue
+                else:
+                    factor_idx = list(range(len(factor0.shape)))
+                    message_idx = [int(nNeighbors0[n0]), len(factor0.shape)]
+                    final_idx = list(range(len(factor0.shape)))
+                    final_idx[nNeighbors0[n0]] = len(factor0.shape)
+                    factor0 = np.einsum(factor0, factor_idx, messages[n0][f0], message_idx, final_idx)
+
+            for n1 in nNeighbors1:
+                if n1 == node:
+                    continue
+                else:
+                    factor_idx = list(range(len(factor1.shape)))
+                    message_idx = [int(nNeighbors1[n1]), len(factor1.shape)]
+                    final_idx = list(range(len(factor1.shape)))
+                    final_idx[nNeighbors1[n1]] = len(factor1.shape)
+                    factor1 = np.einsum(factor1, factor_idx, messages[n1][f1], message_idx, final_idx)
+
+            # collect the two conjugated factors
+            _, factor0star, _ = cp.deepcopy(self.factors[f0])
+            _, factor1star, _ = cp.deepcopy(self.factors[f1])
+            factor0star = np.conj(factor0star)
+            factor1star = np.conj(factor1star)
+
+            # prepare for ncon function
+            idx_f0 = list(range(len(factor0.shape)))
+            idx_f1 = list(range(len(factor0.shape), len(factor0.shape) + len(factor1.shape)))
+            idx_f0s = list(range(len(factor0.shape)))
+            idx_f1s = list(range(len(factor0.shape), len(factor0.shape) + len(factor1.shape)))
+            idx_f0[0] = -1  # i
+            idx_f0s[0] = -2  # i'
+            idx_f1[0] = -3  # j
+            idx_f1s[0] = -4  # j'
+            idx_f0[nNeighbors0[node]] = 1000
+            idx_f1[nNeighbors1[node]] = 1000
+            idx_f0s[nNeighbors0[node]] = 1001
+            idx_f1s[nNeighbors1[node]] = 1001
+
+            # use ncon to make the calculation
+            rdm = ncon.ncon([factor0, factor0star, factor1, factor1star],
+                            [idx_f0, idx_f0s, idx_f1, idx_f1s])
+            rdm = np.reshape(rdm, (rdm.shape[0] * rdm.shape[1], rdm.shape[2] * rdm.shape[3]))  # rho_{i * i', j * j'}
+            rdm /= np.trace(rdm)
+            self.twoBodyRDMS.append(rdm)
+
+    def checkBPconvergenceTwoBodyRDMS(self, epsilon):
+        previousRDMS = cp.deepcopy(self.twoBodyRDMS)
+        self.calculateTwoBodyRDMS()
+        newRDMS = self.twoBodyRDMS
+        averagedTraceDistance = 0
+        for n in range(self.nCounter):
+            averagedTraceDistance += self.traceDistance(previousRDMS[n], newRDMS[n])
+        averagedTraceDistance /= self.nCounter
+        if averagedTraceDistance <= epsilon:
+            return 1
+        else: return 0
+
+    def traceDistance(self, a, b):
+        # returns the trace distance between the two density matrices a & b
+        # d = 0.5 * norm(a - b)
+        eigenvalues = np.linalg.eigvals(a - b)
+        d = 0.5 * np.sum(np.abs(eigenvalues))
+        return d
 
     def calculateRDMS_broadcasting(self):
         self.rdms_broadcasting = {}

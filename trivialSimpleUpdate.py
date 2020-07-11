@@ -620,10 +620,6 @@ def BPdoubleSiteRDM1(commonEdge, tensors, weights, smat, messages):
     SiteJ[0] = absorbSqrtWeights(SiteJ[0], edgeNidxJ, weights)
     SiteIconj[0] = absorbSqrtWeights(SiteIconj[0], edgeNidxI, weights)
     SiteJconj[0] = absorbSqrtWeights(SiteJconj[0], edgeNidxJ, weights)
-    #SiteI[0] = absorbWeights(SiteI[0], edgeNidxI, weights)
-    #SiteJ[0] = absorbWeights(SiteJ[0], edgeNidxJ, weights)
-    #SiteIconj[0] = absorbWeights(SiteIconj[0], edgeNidxI, weights)
-    #siteJconj[0] = absorbWeights(siteJconj[0], edgeNidxJ, weights)
     
     
     for i, edge in enumerate(edgeNidxI[0]):
@@ -969,6 +965,8 @@ def singleSiteRDM(tensorIdx, tensors, weights, smat):
 
 
 def absorbAllTensorNetWeights(tensors, weights, smat):
+    cp.deepcopy(tensors)
+    cp.deepcopy(weights)
     n = len(tensors)
     for i in range(n):
         edgeNidx = getEdges(i, smat)
