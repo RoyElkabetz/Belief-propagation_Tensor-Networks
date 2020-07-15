@@ -463,8 +463,8 @@ def truncationSVD(tensor, leftIdx, rightIdx, keepS=None, maxEigenvalNumber=None)
     :return: U, S, V^(dagger) or U * sqrt(S), sqrt(S) * V^(dagger)
     """
     shape = np.array(tensor.shape)
-    leftDim = np.prod(shape[[leftIdx]])
-    rightDim = np.prod(shape[[rightIdx]])
+    leftDim = np.prod(shape[leftIdx])
+    rightDim = np.prod(shape[rightIdx])
     if keepS is not None:
         U, S, Vh = np.linalg.svd(tensor.reshape(leftDim, rightDim), full_matrices=False)
         if maxEigenvalNumber is not None:
@@ -545,8 +545,8 @@ def updateDEFG(edge, tensors, weights, smat, doubleEdgeFactorGraph):
     """
     iFactor, jFactor = getTensors(edge, tensors, smat)
     iEdges, jEdges = getAllTensorsEdges(edge, smat)
-    iFactor = absorbSqrtWeights(cp.deepcopy(iFactor), iEdges, weights)
-    jFactor = absorbSqrtWeights(cp.deepcopy(jFactor), jEdges, weights)
+    iFactor[0] = absorbSqrtWeights(cp.deepcopy(iFactor[0]), iEdges, weights)
+    jFactor[0] = absorbSqrtWeights(cp.deepcopy(jFactor[0]), jEdges, weights)
     doubleEdgeFactorGraph.factors['f' + str(iFactor[1][0])][1] = iFactor[0]
     doubleEdgeFactorGraph.factors['f' + str(jFactor[1][0])][1] = jFactor[0]
     doubleEdgeFactorGraph.nodes['n' + str(edge)][0] = len(weights[edge])
@@ -1092,8 +1092,8 @@ def singleEdgeBPU(tensors, weights, smat, Dmax, edge, defg):
     node = 'n' + str(edge)
     siteI, siteJ = getTensors(edge, tensors, smat)
     edgeNidxI, edgeNidxJ = getAllTensorsEdges(edge, smat)
-    fi = absorbSqrtWeights(siteI[0], edgeNidxI, weights)
-    fj = absorbSqrtWeights(siteJ[0], edgeNidxJ, weights)
+    fi = [absorbSqrtWeights(siteI[0], edgeNidxI, weights), siteI[1]]
+    fj = [absorbSqrtWeights(siteJ[0], edgeNidxJ, weights), siteJ[1]]
     A, B = AnB_calculation(defg, fi, fj, node)
     P = find_P(A, B, Dmax)
     tensors, weights = BPtruncation(tensors, weights, P, edge, smat, Dmax)
@@ -1166,12 +1166,12 @@ def BPtruncation(tensors, weights, P, edge, smat, Dmax):
     """
     edgeNidxI, edgeNidxJ = getTensorsEdges(edge, smat)
     siteI, siteJ = getTensors(edge, tensors, smat)
-    siteI = absorbWeights(siteI, edgeNidxI, weights)
-    siteJ = absorbWeights(siteJ, edgeNidxJ, weights)
+    siteI[0] = absorbWeights(siteI[0], edgeNidxI, weights)
+    siteJ[0] = absorbWeights(siteJ[0], edgeNidxJ, weights)
 
     # absorb the mutual edge
-    siteI[0] = np.einsum(siteI[0], range(len(siteI[0].shape)), np.sqrt(weights[edge]), [siteI[2][0]], range(len(siteI[0].shape)))
-    siteJ[0] = np.einsum(siteJ[0], range(len(siteJ[0].shape)), np.sqrt(weights[edge]), [siteJ[2][0]], range(len(siteJ[0].shape)))
+    siteI[0] = np.einsum(siteI[0], list(range(len(siteI[0].shape))), np.sqrt(weights[edge]), [int(siteI[2][0])], list(range(len(siteI[0].shape))))
+    siteJ[0] = np.einsum(siteJ[0], list(range(len(siteJ[0].shape))), np.sqrt(weights[edge]), [int(siteJ[2][0])], list(range(len(siteJ[0].shape))))
 
     # reshaping
     siteI = indexPermute(siteI)
@@ -1191,8 +1191,8 @@ def BPtruncation(tensors, weights, P, edge, smat, Dmax):
     siteJ[0] = rank3rankN(siteJ[0], j_old_shape)
     siteI = indexPermute(siteI)
     siteJ = indexPermute(siteJ)
-    siteI = absorbInverseWeights(siteI, edgeNidxI, weights)
-    siteJ = absorbInverseWeights(siteJ, edgeNidxJ, weights)
+    siteI[0] = absorbInverseWeights(siteI[0], edgeNidxI, weights)
+    siteJ[0] = absorbInverseWeights(siteJ[0], edgeNidxJ, weights)
 
     # saving new tensors and weights
     tensors[siteI[1][0]] = siteI[0] / tensorNorm(siteI[0])

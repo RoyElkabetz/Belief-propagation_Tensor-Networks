@@ -17,13 +17,15 @@ import ncon_lists_generator as nlg
 def trivialsimpleUpdate(tensors,
                         weights,
                         smat,
-                        Dmax):
+                        Dmax,
+                        scheduling='parallel'):
     """
     The trivial Simple Update algorithm implementation on a general finite tensor network specified by a structure matrix
     :param tensors: list of tensors in the tensor network [T1, T2, T3, ..., Tn]
     :param weights: list of lambda weights [L1, L2, ..., Lm]
     :param smat: tensor network structure matrix
     :param Dmax: maximal bond dimension
+    :param algorithm: 'parallel' or 'series'
     :return: t-SU fixed-point tensors list and weights list
     """
     local_tensors = cp.deepcopy(tensors)
@@ -86,13 +88,21 @@ def trivialsimpleUpdate(tensors,
         Ti[0] = absorbInverseWeights(Ti[0], iEdgesNidx, weights)
         Tj[0] = absorbInverseWeights(Tj[0], jEdgesNidx, weights)
 
-        # Normalize and save new T'i T'j and lambda'_k
-        tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
-        tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
-        weights[Ek] = lambda_k_t / np.sum(lambda_k_t)
+        # Normalize and save new T'i T'j and lambda'_k in different scheduling
+        if scheduling == 'parallel':
+            local_tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
+            local_tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
+            local_weights[Ek] = lambda_k_t / np.sum(lambda_k_t)
 
-    return tensors, weights
+        if scheduling == 'series':
+            tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
+            tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
+            weights[Ek] = lambda_k_t / np.sum(lambda_k_t)
 
+    if scheduling == 'parallel':
+        return local_tensors, local_weights
+    if scheduling == 'series':
+        return tensors, weights
 
 ########################################################################################################################
 #                                                                                                                      #
@@ -323,8 +333,8 @@ def truncationSVD(tensor, leftIdx, rightIdx, keepS=None, maxEigenvalNumber=None)
     :return: U, S, V^(dagger) or U * sqrt(S), sqrt(S) * V^(dagger)
     """
     shape = np.array(tensor.shape)
-    leftDim = np.prod(shape[[leftIdx]])
-    rightDim = np.prod(shape[[rightIdx]])
+    leftDim = np.prod(shape[leftIdx])
+    rightDim = np.prod(shape[rightIdx])
     if keepS is not None:
         U, S, Vh = np.linalg.svd(tensor.reshape(leftDim, rightDim), full_matrices=False)
         if maxEigenvalNumber is not None:

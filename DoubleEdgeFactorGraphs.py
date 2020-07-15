@@ -65,14 +65,21 @@ class defg:
 #                                                                                                                      #
 ########################################################################################################################
 
-    def sumProduct(self, tmax, epsilon, dumping, initializeMessages=None, printTime=None, RDMconvergence=None):
+    def sumProduct(self,
+                   tmax,
+                   epsilon,
+                   dumping,
+                   initializeMessages=None,
+                   printTime=None,
+                   RDMconvergence=None):
+
         factors = self.factors
         nodes = self.nodes
 
         # initialize all messages
         if initializeMessages and self.messages_n2f and self.messages_f2n:
-            node2factor = self.messages_n2f
-            factor2node = self.messages_f2n
+            node2factor = cp.deepcopy(self.messages_n2f)
+            factor2node = cp.deepcopy(self.messages_f2n)
         else:
             node2factor = {}
             factor2node = {}
@@ -95,9 +102,16 @@ class defg:
             self.calculateTwoBodyRDMS()
 
         for t in range(tmax):
+
             # save previous step messages
             preMessages_f2n = cp.deepcopy(factor2node)
             preMessages_n2f = cp.deepcopy(node2factor)
+
+            # calculating factor to node (f -> n) messages
+            for f in factors.keys():
+                for n in factors[f][0].keys():
+                    factor2node[f][n] = dumping * preMessages_f2n[f][n] + (1. - dumping) * self.f2n_message(f, n, node2factor)
+                    factor2node[f][n] /= np.trace(factor2node[f][n])
 
             # calculating node to factor (n -> f) messages
             for n in nodes.keys():
@@ -107,17 +121,10 @@ class defg:
                     neighbors.remove(f)
                     tempMessage = np.ones((alphabet, alphabet), dtype=complex)
                     for item in neighbors:
-                        tempMessage *= preMessages_f2n[item][n]
+                        tempMessage *= factor2node[item][n]
 
-                    node2factor[n][f] = dumping * node2factor[n][f] + (1 - dumping) * tempMessage
+                    node2factor[n][f] = dumping * preMessages_n2f[n][f] + (1. - dumping) * tempMessage
                     node2factor[n][f] /= np.trace(node2factor[n][f])
-
-            # calculating factor to node (f -> n) messages
-            for f in factors.keys():
-                for n in factors[f][0].keys():
-                    factor2node[f][n] = dumping * factor2node[f][n] + (1 - dumping) * self.f2n_message(f, n,
-                                                                                                       preMessages_n2f)
-                    factor2node[f][n] /= np.trace(factor2node[f][n])
 
             # save this step new messages
             self.messages_n2f = cp.deepcopy(node2factor)
@@ -130,8 +137,9 @@ class defg:
             else:
                 if self.checkBPconvergence(preMessages_n2f, preMessages_f2n, epsilon):
                     break
-        if printTime:
+        if printTime and t < tmax - 1:
             print("BP converged in %d iterations " % t)
+        #else: print("BP didn't converged, num of total iterations was {}".format(tmax))
         return
 
     def f2n_message(self, f, n, messages):
@@ -172,6 +180,7 @@ class defg:
 
     def messageInit(self, alphabet):
         return np.ones((alphabet, alphabet), dtype=complex)
+        #return np.eye(alphabet, dtype=complex)
 
     def generateSuperTensor(self, tensor):
         tensorIdx = np.array(range(len(tensor.shape)))
