@@ -2,20 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/BP_analysis.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/temp2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment2-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment3-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/tSU_fixedPoint_experiment4-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleUpdate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tSU_fixedPoint_experiment.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tSU_fixedPoint_experiment2.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tSU_fixedPoint_experiment3.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tSU_fixedPoint_experiment4.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trivialSimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/trivialSimpleUpdate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BP_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +54,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.customizations" />
   </component>
-  <component name="RunManager" selected="Python.temp">
+  <component name="RunManager" selected="Python.temp2">
     <configuration name="BP_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -146,20 +137,16 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="trivial_ITE" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="temp2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/trivial_ITE.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -171,17 +158,17 @@
     <list>
       <item itemvalue="Python.main" />
       <item itemvalue="Python.main_tSU_fixedPoint" />
-      <item itemvalue="Python.trivial_ITE" />
       <item itemvalue="Python.BP_analysis" />
       <item itemvalue="Python.temp" />
+      <item itemvalue="Python.temp2" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.temp2" />
         <item itemvalue="Python.temp" />
         <item itemvalue="Python.BP_analysis" />
         <item itemvalue="Python.main_tSU_fixedPoint" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.trivial_ITE" />
       </list>
     </recent_temporary>
   </component>
@@ -208,34 +195,38 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594754364053">
-      <screen x="0" y="23" width="1440" height="792" />
+    <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594846526974">
+      <screen x="0" y="23" width="1440" height="791" />
     </state>
-    <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.791@0.23.1440.791" timestamp="1593898838159" />
-    <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.792@0.23.1440.792" timestamp="1594754364053" />
+    <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.791@0.23.1440.791" timestamp="1594846526974" />
+    <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.792@0.23.1440.792" timestamp="1594843749061" />
     <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.795@0.23.1440.795" timestamp="1593974827499" />
     <state x="184" y="80" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.799@0.23.1440.799" timestamp="1594582007198" />
-    <state width="1419" height="250" key="GridCell.Tab.0.bottom" timestamp="1594831189562">
-      <screen x="0" y="23" width="1440" height="795" />
+    <state width="1419" height="201" key="GridCell.Tab.0.bottom" timestamp="1594846550414">
+      <screen x="0" y="23" width="1440" height="791" />
     </state>
+    <state width="1419" height="201" key="GridCell.Tab.0.bottom/0.23.1440.791@0.23.1440.791" timestamp="1594846550414" />
     <state width="1419" height="202" key="GridCell.Tab.0.bottom/0.23.1440.792@0.23.1440.792" timestamp="1594755407832" />
     <state width="1419" height="250" key="GridCell.Tab.0.bottom/0.23.1440.795@0.23.1440.795" timestamp="1594831189562" />
     <state width="1419" height="203" key="GridCell.Tab.0.bottom/0.23.1440.799@0.23.1440.799" timestamp="1594582010489" />
-    <state width="1419" height="250" key="GridCell.Tab.0.center" timestamp="1594831189561">
-      <screen x="0" y="23" width="1440" height="795" />
+    <state width="1419" height="201" key="GridCell.Tab.0.center" timestamp="1594846550412">
+      <screen x="0" y="23" width="1440" height="791" />
     </state>
+    <state width="1419" height="201" key="GridCell.Tab.0.center/0.23.1440.791@0.23.1440.791" timestamp="1594846550412" />
     <state width="1419" height="202" key="GridCell.Tab.0.center/0.23.1440.792@0.23.1440.792" timestamp="1594755407830" />
     <state width="1419" height="250" key="GridCell.Tab.0.center/0.23.1440.795@0.23.1440.795" timestamp="1594831189561" />
     <state width="1419" height="203" key="GridCell.Tab.0.center/0.23.1440.799@0.23.1440.799" timestamp="1594582010488" />
-    <state width="1419" height="250" key="GridCell.Tab.0.left" timestamp="1594831189560">
-      <screen x="0" y="23" width="1440" height="795" />
+    <state width="1419" height="201" key="GridCell.Tab.0.left" timestamp="1594846550412">
+      <screen x="0" y="23" width="1440" height="791" />
     </state>
+    <state width="1419" height="201" key="GridCell.Tab.0.left/0.23.1440.791@0.23.1440.791" timestamp="1594846550412" />
     <state width="1419" height="202" key="GridCell.Tab.0.left/0.23.1440.792@0.23.1440.792" timestamp="1594755407830" />
     <state width="1419" height="250" key="GridCell.Tab.0.left/0.23.1440.795@0.23.1440.795" timestamp="1594831189560" />
     <state width="1419" height="203" key="GridCell.Tab.0.left/0.23.1440.799@0.23.1440.799" timestamp="1594582010487" />
-    <state width="1419" height="250" key="GridCell.Tab.0.right" timestamp="1594831189562">
-      <screen x="0" y="23" width="1440" height="795" />
+    <state width="1419" height="201" key="GridCell.Tab.0.right" timestamp="1594846550413">
+      <screen x="0" y="23" width="1440" height="791" />
     </state>
+    <state width="1419" height="201" key="GridCell.Tab.0.right/0.23.1440.791@0.23.1440.791" timestamp="1594846550413" />
     <state width="1419" height="202" key="GridCell.Tab.0.right/0.23.1440.792@0.23.1440.792" timestamp="1594755407831" />
     <state width="1419" height="250" key="GridCell.Tab.0.right/0.23.1440.795@0.23.1440.795" timestamp="1594831189562" />
     <state width="1419" height="203" key="GridCell.Tab.0.right/0.23.1440.799@0.23.1440.799" timestamp="1594582010488" />
@@ -276,11 +267,6 @@
           <url>file://$PROJECT_DIR$/Heisenberg_model_function.py</url>
           <line>212</line>
           <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/BP_analysis.py</url>
-          <line>40</line>
-          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

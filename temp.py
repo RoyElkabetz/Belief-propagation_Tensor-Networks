@@ -9,6 +9,8 @@ import copy as cp
 import pickle
 import pandas as pd
 import sys
+#from ipywidgets import IntProgress
+#from IPython.display import display
 
 
 import RandomPEPS as rpeps
@@ -18,38 +20,20 @@ import DoubleEdgeFactorGraphs as defg
 import SimpleUpdate as su
 import bmpslib as bmps
 
-
 # tSU and BP parameters
-N, M = 4, 4                                                   # NxM PEPS
+N, M = 10, 10                                                  # NxM PEPS
 bc = 'open'                                                   # boundary conditions
-dw = 1e-6                                                     # maximal error allowed between two-body RDMS
+dw = 1e-6                                                    # maximal error allowed between two-body RDMS
 d = 2                                                         # tensor network physical bond dimension
-bond_dimensions = [2, 3]                                      # maximal virtual bond dimensions allowed for truncation
-t_max = 10                                                    # maximal number of BP iterations
+bond_dimensions = [2, 3]                                   # maximal virtual bond dimensions allowed for truncation
+t_max = 1000                                               # maximal number of BP iterations
 epsilon = 1e-10                                               # convergence criteria for BP messages (not used)
 dumping = 0.                                                  # BP messages dumping between [0, 1]
-iterations = 10                                               # maximal number of tSU iterations
-BPU_iterations = 10                                           # maximal number of BPU iterations
+iterations = 1000                                             # maximal number of tSU iterations
 sched = 'parallel'                                            # tSU scheduling scheme
-num_experiments = 5                                           # number of random experiments for each bond dimension
+num_experiments = 20                                       # number of random experiments for each bond dimension
 smat, _ = smg.finitePEPSobcStructureMatrixGenerator(N, M)     # generating the PEPS structure matrix
 n, m = smat.shape
-
-
-
-# ITE parameters
-Z = np.array([[1, 0], [0, -1]])
-Y = np.array([[0, -1j], [1j, 0]])
-X = np.array([[0, 1], [1, 0]])
-Sz = 0.5 * Z
-Sy = 0.5 * Y
-Sx = 0.5 * X
-Opi = [Sx, Sy, Sz]
-Opj = [Sx, Sy, Sz]
-Op_field = np.eye(d)
-interactionConstants = [-1] * m
-timeStep = [0.1, 0.05, 0.01, 0.005, 0.001]
-
 
 ATD_D = []         # Averaged Trace Distance (ATD) for each virtual bond dimension D
 BP_num_D = []      # numbeer of BP iterations
@@ -65,54 +49,14 @@ for D_max in bond_dimensions:
 
 
     for e in range(num_experiments):
+        #if e % 10 == 0:
+        print(e)
 
         # draw some random PEPS Tensor Network
         tensors, weights = smg.randomTensornetGenerator(smat, d, D_max)
-
-        BPU_graph = defg.defg()
-        BPU_graph = su.TNtoDEFGtransform(BPU_graph, tensors, weights, smat)
-        BPU_graph.sumProduct(t_max, epsilon, dumping, initializeMessages=1, printTime=0, RDMconvergence=0)
-
-        for dt in timeStep:
-            for i in range(BPU_iterations):
-                weights_prev = cp.deepcopy(weights)
-                tensors_next, weights_next = su.simpleUpdate(tensors,
-                                                             weights,
-                                                             dt,
-                                                             interactionConstants,
-                                                             0,
-                                                             Opi,
-                                                             Opj,
-                                                             Op_field,
-                                                             smat,
-                                                             D_max,
-                                                             'BP',
-                                                             graph=BPU_graph)
-                BPU_graph.sumProduct(t_max,
-                                     epsilon,
-                                     dumping,
-                                     initializeMessages=1,
-                                     printTime=0,
-                                     RDMconvergence=0)
-
-                if np.sum(np.abs(np.asarray(weights_prev) - np.asarray(weights_next))) < dt * 1e-3:
-                    tensors = tensors_next
-                    weights = weights_next
-                    break
-                tensors = tensors_next
-                weights = weights_next
-        ground_state_energy = su.energyPerSite(tensors,
-                                               weights,
-                                               smat,
-                                               interactionConstants,
-                                               0,
-                                               Opi,
-                                               Opj,
-                                               Op_field)
-        print('The ground state Energy (per site) is: {}'.format(ground_state_energy))
+        BP_tensors, BP_weights = cp.deepcopy(tensors), cp.deepcopy(weights)
 
         # constructing the dual double-edge factor graph and run a single BP iteration
-        BP_tensors, BP_weights = cp.deepcopy(tensors), cp.deepcopy(weights)
         graph = defg.defg()
         graph = su.TNtoDEFGtransform(graph, BP_tensors, BP_weights, smat)
         graph.sumProduct(1, epsilon, dumping, initializeMessages=1, printTime=0, RDMconvergence=0)
@@ -182,25 +126,19 @@ for D_max in bond_dimensions:
     BP_num_D.append(BP_iters)
     tSU_num_D.append(tSU_iters)
 
-plt.figure(figsize=(12, 8))
-fonts = 20
-names = []
-for i, D in enumerate(bond_dimensions):
-    plt.scatter(range(num_experiments),
-                np.asarray(BP_num_D[i]) / np.asarray(tSU_num_D[i]),
-                color=mcd.CSS4_COLORS[color_list[i]],
-                s=50)
-
-    plt.plot(range(num_experiments),
-             np.mean(np.asarray(BP_num_D[i]) / np.asarray(tSU_num_D[i])) * np.ones((num_experiments, 1)),
-             '--',
-             color=mcd.CSS4_COLORS[color_list[i]])
-
-    names.append('D = ' + str(D))
-plt.title(str(N) + 'x' + str(M) + ' random PEPS', fontsize=fonts)
-plt.xlabel('Experiment number', fontsize=fonts)
-plt.ylabel('T(BP) / T(SU)', fontsize=fonts)
-plt.legend(names, fontsize=fonts)
-plt.ylim([0., 2.])
-plt.grid()
-plt.show()
+data_name = 'data' + str(N) + 'x' + str(M) + '_random_PEPS'
+description_name =  'parameters' + str(N) + 'x' + str(M) + '_random_PEPS'
+data = np.asarray([ATD_D, BP_num_D, tSU_num_D])
+parameters = np.asarray([['ATD', 'BP', 'tSU'],
+                         ['N x M', [N, M]],
+                         ['bond_dimensions', bond_dimensions],
+                         ['bc', bc],
+                         ['d', d],
+                         ['dw', dw],
+                         ['BP t_max', t_max],
+                         ['BP epsilon', epsilon],
+                         ['BP dumping', dumping],
+                         ['tSU t_max', iterations],
+                         ['num of experiments', num_experiments]])
+np.save(data_name, data)
+np.save(description_name, parameters)
