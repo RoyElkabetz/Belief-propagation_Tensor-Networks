@@ -17,10 +17,10 @@ import trivialSimpleUpdate as tsu
 import DoubleEdgeFactorGraphs as defg
 import SimpleUpdate as su
 import bmpslib as bmps
-shapes_N = [4, 10]
-shapes_M = [4, 10]
-bonds = [[2, 3, 4], [2, 3]]
-for sss in range(2):
+shapes_N = [10]
+shapes_M = [10]
+bonds = [[4]]
+for sss in range(1):
 
     # tSU and BP parameters
     N = shapes_N[sss]
@@ -37,7 +37,7 @@ for sss in range(2):
     iterations = 1000                                             # maximal number of tSU iterations
     BPU_iterations = 100                                          # maximal number of BPU iterations
     sched = 'parallel'                                            # tSU scheduling scheme
-    num_experiments = 20                                          # number of random experiments for each bond dimension
+    num_experiments = 1                                         # number of random experiments for each bond dimension
     smat, _ = smg.finitePEPSobcStructureMatrixGenerator(N, M)     # generating the PEPS structure matrix
     n, m = smat.shape
 
@@ -78,8 +78,8 @@ for sss in range(2):
 
             for dt in timeStep:
                 for i in range(BPU_iterations):
-                    #if i % 20 == 0:
-                    #    print('i, dt = ', i, dt)
+                    if i % 10 == 0:
+                        print('i, dt = ', i, dt)
                     weights_prev = cp.deepcopy(weights)
                     tensors_next, weights_next = su.simpleUpdate(tensors,
                                                                  weights,
@@ -188,8 +188,8 @@ for sss in range(2):
         BP_num_D.append(BP_iters)
         tSU_num_D.append(tSU_iters)
 
-    data_name = 'data' + str(N) + 'x' + str(M) + '_AFH_ground_state_PEPS'
-    description_name = 'parameters' + str(N) + 'x' + str(M) + '_AFH_ground_state_PEPS'
+    data_name = 'data' + str(N) + 'x' + str(M) + '_AFH_ground_state_PEPS_D_4'
+    description_name = 'parameters' + str(N) + 'x' + str(M) + '_AFH_ground_state_PEPS_D_4'
     data = np.asarray([ATD_D, BP_num_D, tSU_num_D])
     parameters = np.asarray([['ATD', 'BP', 'tSU'],
                              ['N x M', [N, M]],
@@ -204,5 +204,5 @@ for sss in range(2):
                              ['num of experiments', num_experiments],
                              ['BPU_iterations', BPU_iterations],
                              ['ITE time steps', timeStep]])
-    np.save(data_name, data)
-    np.save(description_name, parameters)
+    #np.save(data_name, data)
+    #np.save(description_name, parameters)

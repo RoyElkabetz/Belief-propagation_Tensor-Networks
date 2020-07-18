@@ -25,7 +25,7 @@ N, M = 10, 10                                                  # NxM PEPS
 bc = 'open'                                                   # boundary conditions
 dw = 1e-6                                                    # maximal error allowed between two-body RDMS
 d = 2                                                         # tensor network physical bond dimension
-bond_dimensions = [2, 3]                                   # maximal virtual bond dimensions allowed for truncation
+bond_dimensions = [4]                                   # maximal virtual bond dimensions allowed for truncation
 t_max = 1000                                               # maximal number of BP iterations
 epsilon = 1e-10                                               # convergence criteria for BP messages (not used)
 dumping = 0.                                                  # BP messages dumping between [0, 1]
@@ -126,8 +126,8 @@ for D_max in bond_dimensions:
     BP_num_D.append(BP_iters)
     tSU_num_D.append(tSU_iters)
 
-data_name = 'data' + str(N) + 'x' + str(M) + '_random_PEPS'
-description_name =  'parameters' + str(N) + 'x' + str(M) + '_random_PEPS'
+data_name = 'data' + str(N) + 'x' + str(M) + '_random_PEPS_D_4'
+description_name =  'parameters' + str(N) + 'x' + str(M) + '_random_PEPS_D_4'
 data = np.asarray([ATD_D, BP_num_D, tSU_num_D])
 parameters = np.asarray([['ATD', 'BP', 'tSU'],
                          ['N x M', [N, M]],
