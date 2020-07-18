@@ -17,10 +17,10 @@ import trivialSimpleUpdate as tsu
 import DoubleEdgeFactorGraphs as defg
 import SimpleUpdate as su
 import bmpslib as bmps
-shapes_N = [10]
-shapes_M = [10]
-bonds = [[4]]
-for sss in range(1):
+shapes_N = [4, 10]
+shapes_M = [4, 10]
+bonds = [[2, 3, 4], [2, 3, 4]]
+for sss in range(2):
 
     # tSU and BP parameters
     N = shapes_N[sss]
@@ -31,13 +31,13 @@ for sss in range(1):
     bc = 'open'                                                   # boundary conditions
     dw = 1e-6                                                     # maximal error allowed between two-body RDMS
     d = 2                                                         # tensor network physical bond dimension
-    t_max = 1000                                                  # maximal number of BP iterations
+    t_max = 200                                                  # maximal number of BP iterations
     epsilon = 1e-10                                               # convergence criteria for BP messages (not used)
     dumping = 0.                                                  # BP messages dumping between [0, 1]
-    iterations = 1000                                             # maximal number of tSU iterations
+    iterations = 200                                             # maximal number of tSU iterations
     BPU_iterations = 100                                          # maximal number of BPU iterations
     sched = 'parallel'                                            # tSU scheduling scheme
-    num_experiments = 1                                         # number of random experiments for each bond dimension
+    num_experiments = 20                                     # number of random experiments for each bond dimension
     smat, _ = smg.finitePEPSobcStructureMatrixGenerator(N, M)     # generating the PEPS structure matrix
     n, m = smat.shape
 
@@ -51,7 +51,7 @@ for sss in range(1):
     Opi = [Sx, Sy, Sz]
     Opj = [Sx, Sy, Sz]
     Op_field = np.eye(d)
-    interactionConstants = [-1] * m
+    #interactionConstants = [-1] * m
     timeStep = [0.1, 0.05, 0.01, 0.005, 0.001]
 
     ATD_D = []         # Averaged Trace Distance (ATD) for each virtual bond dimension D
@@ -68,9 +68,11 @@ for sss in range(1):
         print('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
 
         for e in range(num_experiments):
+
             print('experiment = ', e)
             # draw some random PEPS Tensor Network
             tensors, weights = smg.randomTensornetGenerator(smat, d, D_max)
+            interactionConstants = -np.random.rand(m)
 
             BPU_graph = defg.defg()
             BPU_graph = su.TNtoDEFGtransform(BPU_graph, tensors, weights, smat)
@@ -204,5 +206,5 @@ for sss in range(1):
                              ['num of experiments', num_experiments],
                              ['BPU_iterations', BPU_iterations],
                              ['ITE time steps', timeStep]])
-    #np.save(data_name, data)
-    #np.save(description_name, parameters)
+    np.save(data_name, data)
+    np.save(description_name, parameters)

@@ -2,24 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/temp3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/PEPS Bethe free energy-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/PEPS Bethe free energy-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/make_plot-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/make_plot-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PEPS Bethe free energy.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/PEPS Bethe free energy.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/data10x10_AFH_ground_state_PEPS.npy" beforeDir="false" afterPath="$PROJECT_DIR$/data/data10x10_AFH_ground_state_PEPS.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/data10x10_random_PEPS.npy" beforeDir="false" afterPath="$PROJECT_DIR$/data/data10x10_random_PEPS.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/parameters10x10_AFH_ground_state_PEPS.npy" beforeDir="false" afterPath="$PROJECT_DIR$/data/parameters10x10_AFH_ground_state_PEPS.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/parameters10x10_random_PEPS.npy" beforeDir="false" afterPath="$PROJECT_DIR$/data/parameters10x10_random_PEPS.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random coupling.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random coupling.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/treeTN-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/treeTN.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/make_plot.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/make_plot.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PEPS Bethe free energy.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/temp2.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp3.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +55,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.temp2">
+  <component name="RunManager" selected="Python.temp3">
     <configuration name="BP_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -114,6 +102,9 @@
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -132,6 +123,9 @@
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -150,9 +144,6 @@
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -176,9 +167,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.temp3" />
         <item itemvalue="Python.temp2" />
         <item itemvalue="Python.temp" />
-        <item itemvalue="Python.temp3" />
         <item itemvalue="Python.BP_analysis" />
         <item itemvalue="Python.main_tSU_fixedPoint" />
       </list>

@@ -183,14 +183,17 @@ class defg:
         #return np.eye(alphabet, dtype=complex)
 
     def generateSuperTensor(self, tensor):
-        tensorIdx = np.array(range(len(tensor.shape)))
-        conjtensorIdx = cp.copy(tensorIdx) + len(tensorIdx)
+        tensorIdx = list(range(len(tensor.shape)))
+        conjtensorIdx = []
         superTensorIdx = []
-        for i in range(1, len(tensorIdx)):
+        for i in tensorIdx:
+            conjtensorIdx.append(i + len(tensorIdx))
             superTensorIdx.append(tensorIdx[i])
             superTensorIdx.append(conjtensorIdx[i])
-        conjtensorIdx[0] = tensorIdx[0]
         superTensor = np.einsum(tensor, tensorIdx, np.conj(tensor), conjtensorIdx, superTensorIdx)
+        index = list(range(len(superTensor.shape)))
+        index[1] = index[0]
+        superTensor = np.einsum(superTensor, index)
         return superTensor
 
     def generateSuperPhysicalTensor(self, tensor):
@@ -242,6 +245,21 @@ class defg:
             self.nodesBeliefs[n] = tempMessage / np.trace(tempMessage)
 
     def calculateFactorsBeliefs(self):
+        self.factorsBeliefs = {}
+        factors = self.factors
+        messages = self.messages_n2f
+        keys = factors.keys()
+        for f in keys:
+            superTensor = self.generateSuperPhysicalTensor(cp.deepcopy(factors[f][1]))
+            neighbors = factors[f][0]
+            for n in neighbors.keys():
+                superTensor *= self.messageBroadcasting(messages[n][f], neighbors[n], superTensor)
+            index = list(range(len(superTensor.shape)))
+            index[1] = index[0]
+            superTensor = np.einsum(superTensor, index)
+            self.factorsBeliefs[f] = superTensor
+
+    def calculatePhysicalFactorsBeliefs(self):
         self.factorsBeliefs = {}
         factors = self.factors
         messages = self.messages_n2f
