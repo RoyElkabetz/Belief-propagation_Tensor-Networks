@@ -1,26 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/make_plot-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/make_plot-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Bethe_values 10x10 random_PEPS 18Jul2020_D_2.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Bethe_values 4x4AFH_PEPS_ground_state 18Jul2020.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Bethe_values_4x4_AFH_ground_state_PEPS_with_random_couplings_18Jul2020_D_2.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Bethe_values_4x4_FH_ground_state_PEPS_with_random_couplings_18Jul2020_D_2.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Bethe_values_4x4_random_PEPS_18Jul2020_D_2.npy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/PEPS Bethe free energy.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS_18Jul2020.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS_18Jul2020.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/$4 x 4$ random PEPS.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/$4 x 4$ random PEPS.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random coupling_18Jul2020.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random coupling_18Jul2020.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH with random coupling.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH with random coupling.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/make_plot.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/make_plot.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp2.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp2.py" afterDir="false" />
-    </list>
+    <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
