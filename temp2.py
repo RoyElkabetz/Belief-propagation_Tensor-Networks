@@ -80,7 +80,7 @@ for sss in range(2):
 
             for dt in timeStep:
                 for i in range(BPU_iterations):
-                    if i % 10 == 0:
+                    if i % 45 == 0:
                         print('i, dt = ', i, dt)
                     weights_prev = cp.deepcopy(weights)
                     tensors_next, weights_next = su.simpleUpdate(tensors,

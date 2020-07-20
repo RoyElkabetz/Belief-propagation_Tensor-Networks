@@ -3,11 +3,23 @@
   <component name="ChangeListManager">
     <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/PEPS Bethe free energy-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/PEPS Bethe free energy-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" beforeDir="false" afterPath="$PROJECT_DIR$/DoubleEdgeFactorGraphs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PEPS Bethe free energy.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/make_plot-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/make_plot-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Bethe_values 10x10 random_PEPS 18Jul2020_D_2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Bethe_values 4x4AFH_PEPS_ground_state 18Jul2020.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Bethe_values_4x4_AFH_ground_state_PEPS_with_random_couplings_18Jul2020_D_2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Bethe_values_4x4_FH_ground_state_PEPS_with_random_couplings_18Jul2020_D_2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Bethe_values_4x4_random_PEPS_18Jul2020_D_2.npy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/PEPS Bethe free energy.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS_18Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS_18Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$4 x 4$ random PEPS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$4 x 4$ random PEPS.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random coupling_18Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random coupling_18Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH with random coupling.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH with random coupling.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/make_plot.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/make_plot.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp2.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp3.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +67,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.temp3">
+  <component name="RunManager" selected="Python.temp2">
     <configuration name="BP_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -123,9 +135,6 @@
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -167,8 +176,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.temp3" />
         <item itemvalue="Python.temp2" />
+        <item itemvalue="Python.temp3" />
         <item itemvalue="Python.temp" />
         <item itemvalue="Python.BP_analysis" />
         <item itemvalue="Python.main_tSU_fixedPoint" />
