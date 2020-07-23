@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/10x10 random PEPS.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/10x10 random PEPS.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/4x4 random PEPS.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/4x4 random PEPS.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ground state of 10x10 AFH with random coupling.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ground state of 10x10 AFH with random coupling.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ground state of 4x4 AFH with random coupling.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ground state of 4x4 AFH with random coupling.svg" beforeDir="false" />
-    </list>
+    <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
