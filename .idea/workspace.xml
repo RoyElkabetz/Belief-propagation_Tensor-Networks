@@ -1,7 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="" />
+    <list default="true" id="00cc8d53-ac01-413c-92ef-7fecce9c2446" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SimpleUpdate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/honeycomb_su.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS_20Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$10 x 10$ random PEPS_20Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$4 x 4$ random PEPS_20Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/$4 x 4$ random PEPS_20Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random couplings_20Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH with random couplings_20Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH_20Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $10 x 10$ AFH_20Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH with random couplings_20Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH with random couplings_20Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH_20Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/Ground state of $4 x 4$ AFH_20Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/$10 x 10$ random PEPS_18Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/$10 x 10$ random PEPS_18Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/$4 x 4$ random PEPS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/$4 x 4$ random PEPS.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/Ground state of $10 x 10$ AFH with random coupling_18Jul2020.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/Ground state of $10 x 10$ AFH with random coupling_18Jul2020.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/Ground state of $4 x 4$ AFH with random coupling.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/old_images/Ground state of $4 x 4$ AFH with random coupling.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/random_PEPS.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp3.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trivialSimpleUpdate.py" beforeDir="false" afterPath="$PROJECT_DIR$/trivialSimpleUpdate.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -48,7 +75,49 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.temp2">
+  <component name="RunManager" selected="Python.Behte_free_energe_vs_single_tSU_steps">
+    <configuration name="BP-tSU_convergence_time_comparison" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="QBPmodule" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BP-tSU_convergence_time_comparison.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="BP-tSU_convergence_time_comparison2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="QBPmodule" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BP-tSU_convergence_time_comparison2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="BP_analysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QBPmodule" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -62,6 +131,24 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BP_analysis.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Behte_free_energe_vs_single_tSU_steps" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="QBPmodule" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Behte_free_energe_vs_single_tSU_steps.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -91,75 +178,18 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="temp" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="QBPmodule" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="temp2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="QBPmodule" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="temp3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="QBPmodule" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp3.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Python.main_tSU_fixedPoint" />
       <item itemvalue="Python.BP_analysis" />
-      <item itemvalue="Python.temp" />
-      <item itemvalue="Python.temp2" />
-      <item itemvalue="Python.temp3" />
+      <item itemvalue="Python.Behte_free_energe_vs_single_tSU_steps" />
+      <item itemvalue="Python.BP-tSU_convergence_time_comparison" />
+      <item itemvalue="Python.BP-tSU_convergence_time_comparison2" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.temp2" />
-        <item itemvalue="Python.temp3" />
-        <item itemvalue="Python.temp" />
+        <item itemvalue="Python.Behte_free_energe_vs_single_tSU_steps" />
+        <item itemvalue="Python.BP-tSU_convergence_time_comparison2" />
+        <item itemvalue="Python.BP-tSU_convergence_time_comparison" />
         <item itemvalue="Python.BP_analysis" />
         <item itemvalue="Python.main_tSU_fixedPoint" />
       </list>

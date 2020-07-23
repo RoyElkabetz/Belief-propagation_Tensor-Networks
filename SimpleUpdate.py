@@ -137,6 +137,9 @@ def simpleUpdate(tensors,
         tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
         weights[Ek] = lambda_k_tild / np.sum(lambda_k_tild)
 
+        if type == 'BP':
+            tensors, weights = singleEdgeBPU(tensors, weights, smat, Dmax, Ek, graph)
+
 
 
     else:
@@ -435,7 +438,7 @@ def rank2rank3(tensor, physicalDimension):
     :return: rank-3 new tensor such that:
              newTensor.shape = (oldTensor.shape[0], oldTensor.shape[0] / physicalDimension, oldTensor.shape[1])
     """
-    if len(tensor.shape) is not 2:
+    if len(tensor.shape) != 2:
         raise IndexError('Error: 00003')
     newTensor = np.reshape(tensor, [physicalDimension, int(tensor.shape[0] / physicalDimension), tensor.shape[1]])
     return newTensor

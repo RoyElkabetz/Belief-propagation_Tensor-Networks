@@ -18,7 +18,8 @@ def trivialsimpleUpdate(tensors,
                         weights,
                         smat,
                         Dmax,
-                        scheduling='parallel'):
+                        scheduling='parallel',
+                        singleEdge=None):
     """
     The trivial Simple Update algorithm implementation on a general finite tensor network specified by a structure matrix
     :param tensors: list of tensors in the tensor network [T1, T2, T3, ..., Tn]
@@ -26,13 +27,15 @@ def trivialsimpleUpdate(tensors,
     :param smat: tensor network structure matrix
     :param Dmax: maximal bond dimension
     :param algorithm: 'parallel' or 'series'
+    :param singleEdge: run a single su step over that specific edge
     :return: t-SU fixed-point tensors list and weights list
     """
     local_tensors = cp.deepcopy(tensors)
     local_weights = cp.deepcopy(weights)
     n, m = np.shape(smat)
     d = local_tensors[0].shape[0]
-    for Ek in range(m):
+    if singleEdge:
+        Ek = singleEdge
         lambda_k = local_weights[Ek]
         D = len(lambda_k)
 
@@ -98,6 +101,74 @@ def trivialsimpleUpdate(tensors,
             tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
             tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
             weights[Ek] = lambda_k_t / np.sum(lambda_k_t)
+
+    else:
+        for Ek in range(m):
+            lambda_k = local_weights[Ek]
+            D = len(lambda_k)
+
+            # Find tensors Ti, Tj and their corresponding indices connected along edge Ek.
+            Ti, Tj = getTensors(Ek, local_tensors, smat)
+
+            # collect edges and remove the Ek edge from both lists
+            iEdgesNidx, jEdgesNidx = getTensorsEdges(Ek, smat)
+
+            # absorb environment (lambda weights) into tensors
+            Ti[0] = absorbWeights(Ti[0], iEdgesNidx, weights)
+            Tj[0] = absorbWeights(Tj[0], jEdgesNidx, weights)
+
+            # permuting the indices associated with edge Ek tensors Ti, Tj with their k^th index
+            Ti = indexPermute(Ti)
+            Tj = indexPermute(Tj)
+
+            # Group all virtual indices Em!=Ek to form Mi, Mj MPS tensors
+            Mi = np.reshape(Ti[0], (d, D, -1))  # (i, Ek, rest_i)
+            Mj = np.reshape(Tj[0], (d, D, -1))  # (j, Ek, rest_j)
+
+            # contract to theta tensor
+            A = np.einsum(Mi, [0, 1, 2], np.diag(lambda_k), [1, 3], [0, 3, 2])  # Mi(i, Ek, rest_i)
+            theta = np.einsum(A, [0, 1, 2], Mj, [3, 1, 4], [0, 2, 3, 4])  # theta(i, rest_i, j, rest_j)
+
+            # SVD and truncation
+            U, lambda_k_t, V = truncationSVD(theta, [0, 1], [2, 3], keepS='yes',
+                                             maxEigenvalNumber=Dmax)  # with truncation
+            # Shapes after SVD
+            # U (i * rest_i, D_max)
+            # V (D_max, j * rest_j)
+            # lambda_k_t (D_max)
+
+            # reshaping U and V back to MPS tensors
+            U = np.reshape(U, (d, Mi.shape[2], U.shape[1]))  # (i, rest_i, D_max)
+            Mi_t = np.transpose(U, [0, 2, 1])  # (i, D_max, rest_i)
+            V = np.reshape(V, (V.shape[0], d, Mj.shape[2]))  # (D_max, j, rest_j)
+            Mj_t = np.transpose(V, [1, 0, 2])  # (j, D_max, rest_j)
+
+            # set new shapes and reshape back to original shape tensors
+            i_new_shape = list(Ti[0].shape)
+            i_new_shape[1] = Mi_t.shape[1]
+            j_new_shape = list(Tj[0].shape)
+            j_new_shape[1] = Mj_t.shape[1]
+            Ti[0] = np.reshape(Mi_t, i_new_shape)
+            Tj[0] = np.reshape(Mj_t, j_new_shape)
+
+            # permuting back the legs of Ti and Tj
+            Ti = indexPermute(Ti)
+            Tj = indexPermute(Tj)
+
+            # Remove bond matrices lambda_m from virtual legs Em != Ek to obtain the updated tensors T'i, T'j.
+            Ti[0] = absorbInverseWeights(Ti[0], iEdgesNidx, weights)
+            Tj[0] = absorbInverseWeights(Tj[0], jEdgesNidx, weights)
+
+            # Normalize and save new T'i T'j and lambda'_k in different scheduling
+            if scheduling == 'parallel':
+                local_tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
+                local_tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
+                local_weights[Ek] = lambda_k_t / np.sum(lambda_k_t)
+
+            if scheduling == 'series':
+                tensors[Ti[1][0]] = Ti[0] / tensorNorm(Ti[0])
+                tensors[Tj[1][0]] = Tj[0] / tensorNorm(Tj[0])
+                weights[Ek] = lambda_k_t / np.sum(lambda_k_t)
 
     if scheduling == 'parallel':
         return local_tensors, local_weights
