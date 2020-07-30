@@ -17,9 +17,12 @@ import trivialSimpleUpdate as tsu
 import DoubleEdgeFactorGraphs as defg
 import SimpleUpdate as su
 import bmpslib as bmps
-shapes_N = [4, 10]
-shapes_M = [4, 10]
-bonds = [[2, 3, 4], [2, 3, 4]]
+from datetime import date
+print(date.today())
+
+shapes_N = [4]
+shapes_M = [4]
+bonds = [[2, 3, 4]]
 for sss in range(2):
 
     # tSU and BP parameters
@@ -31,13 +34,13 @@ for sss in range(2):
     bc = 'open'                                                   # boundary conditions
     dw = 1e-6                                                     # maximal error allowed between two-body RDMS
     d = 2                                                         # tensor network physical bond dimension
-    t_max = 200                                                  # maximal number of BP iterations
-    epsilon = 1e-10                                               # convergence criteria for BP messages (not used)
+    t_max = 2000                                                 # maximal number of BP iterations
+    epsilon = 1e-8                                               # convergence criteria for BP messages (not used)
     dumping = 0.                                                  # BP messages dumping between [0, 1]
-    iterations = 200                                             # maximal number of tSU iterations
-    BPU_iterations = 100                                          # maximal number of BPU iterations
+    iterations = 2000                                             # maximal number of tSU iterations
+    BPU_iterations = 2000                                         # maximal number of BPU iterations
     sched = 'parallel'                                            # tSU scheduling scheme
-    num_experiments = 20                                     # number of random experiments for each bond dimension
+    num_experiments = 10                                     # number of random experiments for each bond dimension
     smat, _ = smg.finitePEPSobcStructureMatrixGenerator(N, M)     # generating the PEPS structure matrix
     n, m = smat.shape
 
@@ -52,7 +55,7 @@ for sss in range(2):
     Opj = [Sx, Sy, Sz]
     Op_field = np.eye(d)
     #interactionConstants = [-1] * m
-    timeStep = [0.1, 0.05, 0.01, 0.005, 0.001]
+    timeStep = [0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001]
 
     ATD_D = []         # Averaged Trace Distance (ATD) for each virtual bond dimension D
     BP_num_D = []      # number of BP iterations
@@ -77,9 +80,10 @@ for sss in range(2):
             BPU_graph = defg.defg()
             BPU_graph = su.TNtoDEFGtransform(BPU_graph, tensors, weights, smat)
             BPU_graph.sumProduct(t_max, epsilon, dumping, initializeMessages=1, printTime=0, RDMconvergence=0)
-
+            counter = 0
             for dt in timeStep:
                 for i in range(BPU_iterations):
+                    counter += 1
                     if i % 45 == 0:
                         print('i, dt = ', i, dt)
                     weights_prev = cp.deepcopy(weights)
@@ -117,7 +121,7 @@ for sss in range(2):
                                                    Opj,
                                                    Op_field)
             print('The ground state Energy (per site) is: {}'.format(np.round(ground_state_energy, 6)))
-
+            print('BPU counter = {}\n\n'.format(counter))
             # constructing the dual double-edge factor graph and run a single BP iteration
             BP_tensors, BP_weights = cp.deepcopy(tensors), cp.deepcopy(weights)
             graph = defg.defg()
@@ -190,8 +194,8 @@ for sss in range(2):
         BP_num_D.append(BP_iters)
         tSU_num_D.append(tSU_iters)
 
-    data_name = 'data' + str(N) + 'x' + str(M) + '_AFH_ground_state_PEPS_D_4'
-    description_name = 'parameters' + str(N) + 'x' + str(M) + '_AFH_ground_state_PEPS_D_4'
+    data_name = 'data' + str(N) + 'x' + str(M) + '_AFH_PEPS_with_random_couplings_' + str(date.today())
+    description_name = 'parameters' + str(N) + 'x' + str(M) + '_AFH_PEPS_with_random_couplings_' + str(date.today())
     data = np.asarray([ATD_D, BP_num_D, tSU_num_D])
     parameters = np.asarray([['ATD', 'BP', 'tSU'],
                              ['N x M', [N, M]],

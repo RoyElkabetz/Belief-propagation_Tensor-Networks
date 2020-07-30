@@ -14,7 +14,7 @@ def randomTensornetGenerator(smat, d, D):
     for ii in range(n):
         shape = [d]
         shape = shape + [D] * np.nonzero(smat[ii, :])[0].shape[0]
-        tensor = np.random.random(shape) + 1j * np.random.random(shape)
+        tensor = 2 * (np.random.random(shape) - 0.5) + 1j * 2 * (np.random.random(shape) - 0.5)
         norm = np.sqrt(np.einsum(tensor, shape, np.conj(tensor), shape))
         tensors.append(tensor / norm)
     lambdas = []
