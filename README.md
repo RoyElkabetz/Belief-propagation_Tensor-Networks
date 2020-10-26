@@ -7,6 +7,7 @@ We also proved the equivalence of BP to the well-known tensor network algorithm 
 Here is the code.
 
 Hope it is not to messy. There are notebooks with examples in the Notebooks folder.
+In the near future I hope to make this reposetory a bit clearer, cleaner and more accessible.
 
 Our papper on arXiv https://arxiv.org/abs/2008.04433
  
